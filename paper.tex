@@ -16,14 +16,46 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
-\title{An Agentic and Deep Generative Framework for Multi-Scalar Urban Air Quality Index Forecasting and Unsupervised Pollutant Segment Mapping\\
-{\footnotesize \textsuperscript{*}Predictive Analytics (PA) Lab Research Paper, Term II}
+\title{
+An Agentic and Deep Generative Framework for Multi-Scalar Urban Air Quality Index Forecasting and Unsupervised Pollutant Segment Mapping\\
 }
 
-\author{\IEEEauthorblockN{Abhay Bhise}
-\IEEEauthorblockA{\textit{Department of Computer Science and Engineering} \\
-\textit{Predictive Analytics (PA) Lab Research}\\
-Email: abhay.bhise@student.in}
+\author{
+
+\IEEEauthorblockN{Disha Satpute}
+\IEEEauthorblockA{
+\textit{Department of Computer Engineering} \\
+\textit{MIT Academy of Engineering, Pune, India} \\
+dishasatpute44@gmail.com
+}
+
+\and
+
+\IEEEauthorblockN{Abhay Bhise}
+\IEEEauthorblockA{
+\textit{Department of Computer Engineering} \\
+\textit{MIT Academy of Engineering, Pune, India} \\
+abhay.bhise@student.in
+}
+
+\and
+
+\IEEEauthorblockN{Sakib Attar}
+\IEEEauthorblockA{
+\textit{Department of Computer Engineering} \\
+\textit{MIT Academy of Engineering, Pune, India} \\
+sakib.attar@student.in
+}
+
+\and
+
+\IEEEauthorblockN{Tushar Divade}
+\IEEEauthorblockA{
+\textit{Department of Mechanical Engineering} \\
+\textit{MIT Academy of Engineering, Pune, India} \\
+fourthmember@student.in
+}
+
 }
 
 \maketitle
@@ -31,7 +63,7 @@ Email: abhay.bhise@student.in}
 \begin{abstract}
 Rapid urbanization and industrialization have dramatically exacerbated ambient air pollution across Indian metropolitan corridors, presenting acute public health challenges. Traditional predictive frameworks are often limited by non-linear chemical kinetics and meteorological volatility, leading to poor operational accuracy during sudden episodic pollution events. This research introduces a comprehensive, multi-scalar Predictive Analytics system designed to ingest, scale, classify, and forecast urban Air Quality Index (AQI) dynamics using a massive multi-city dataset containing 842,160 hourly observations. The framework integrates classical machine learning, unsupervised dimensionality reduction, and sequential deep learning to capture spatial and temporal pollutant regimes.
 
-To address severe dataset imbalance, where high-risk 'Hazardous' events account for less than 0.2\% of instances, we implement a Deep Variational Autoencoder (VAE) that regularizes the feature space via KL-divergence, generating 2,746 high-fidelity synthetic minority samples. This generative oversampling strategy dramatically improves Hazardous class recall from 0.0\% to 23.5\% within our state-of-the-art Bidirectional LSTM (BiLSTM) sequential model, which leverages a Self-Attention mechanism to achieve an overall 1-hour forecasting accuracy of 99.3\% and 24-hour accuracy of 92.4\%. Crucially, the entire forecasting infrastructure is anchored by a conversational Agentic AI chatbot utilizing a ReAct logic loop that integrates live sensor streams with ML inference, offering transparent, natural language decision support.
+To address severe dataset imbalance, where high-risk 'Hazardous' events account for less than 0.2\% of instances, we implement a Deep Variational Autoencoder (VAE) that regularizes the feature space via KL-divergence, generating 2,746 high-fidelity synthetic minority samples. This generative oversampling strategy dramatically improves Hazardous class recall from 0.0\% to 23.5\% within our state-of-the-art Bidirectional LSTM (BiLSTM) sequential model, which leverages a Self-Attention mechanism to achieve an overall 1-hour forecasting accuracy of 88.08\% and 24-hour accuracy of 74.13\% (with tree-based boosting benchmarks reaching 99.31\% on short-term horizons). Crucially, the entire forecasting infrastructure is anchored by a conversational Agentic AI chatbot utilizing a ReAct logic loop that integrates live sensor streams with ML inference, offering transparent, natural language decision support.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -133,7 +165,7 @@ To make these high-fidelity predictions useful in real-world scenarios, we build
 \section{Experimentation and Discussion}
 The experimental evaluation is conducted on a high-density, multi-city air quality dataset spanning multiple Indian meteorological zones. The total volume of cleaned data comprises 842,160 hourly records. Feature columns include raw chemical sensor metrics ($\text{PM}_{2.5}$, $\text{PM}_{10}$, $\text{NO}_2$, $\text{CO}$, $\text{SO}_2$, $\text{O}_3$), meteorological parameters (Temperature, Relative Humidity, Wind Speed, Wind Direction), temporal features (Hour, Month, Day of the Week), and custom contextual markers indicating regional festivals (e.g. Diwali) and stubble-burning seasons. Training is executed on a GPU-accelerated computing node using CUDA 12.1. The dataset is split chronologically: 70\% for model training and parameter optimization, 15\% for validation, and 15\% for temporal out-of-sample testing.
 
-We evaluate our system across multiple metrics: overall Classification Accuracy, Macro F1-Score (to assess balance across all 6 classes), and Severe/Hazardous Class Recall (which directly correlates to public health warning efficacy). Our experiments demonstrate that while classical tree-based models like Random Forest and HistGradientBoosting (HGB) train extremely fast and establish solid baseline accuracy, they suffer from significant limitations when capturing multi-scalar temporal momentum. Conversely, recurrent neural models natively capture sequence history. Most notably, our data augmentation experiments show that training the BiLSTM network on the raw imbalanced dataset yields an overall accuracy of 99.1\% but a Hazardous Recall of exactly 0.0\%. Once augmented with the VAE-generated synthetic samples, the BiLSTM successfully preserves its physical prediction boundaries while dramatically increasing its Hazardous Recall to 23.5\% (a critical public health improvement) without degrading classification performance for other classes.
+We evaluate our system across multiple metrics: overall Classification Accuracy, Macro F1-Score (to assess balance across all 6 classes), and Severe/Hazardous Class Recall (which directly correlates to public health warning efficacy). Our experiments demonstrate that while classical tree-based models like Random Forest and HistGradientBoosting (HGB) train extremely fast and establish solid baseline accuracy, they suffer from significant limitations when capturing multi-scalar temporal momentum. Conversely, recurrent neural models natively capture sequence history. Most notably, our data augmentation experiments show that training the BiLSTM network on the raw imbalanced dataset yields an overall accuracy of 81.55\% but a Hazardous Recall of exactly 0.0\%. Once augmented with the VAE-generated synthetic samples, the BiLSTM successfully preserves its physical prediction boundaries while dramatically increasing its Hazardous Recall to 23.5\% (a critical public health improvement) without degrading classification performance for other classes.
 
 \section{Performance Analysis}
 The comparative analysis between our classical models and our deep sequential networks highlights a fascinating empirical trade-off between local structural boundaries and temporal sequence memory. The experimental results are systematically summarized in Table~\ref{tab:performance}.
