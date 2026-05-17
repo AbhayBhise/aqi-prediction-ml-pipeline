@@ -17,7 +17,8 @@
 \begin{document}
 
 \title{
-An Agentic and Deep Generative Framework for Multi-Scalar Urban Air Quality Index Forecasting and Unsupervised Pollutant Segment Mapping\\
+forecasting Analytics of Indian Urban Air Quality Using ML, LSTM Forecasting, Clustering Techniques, and Intelligent Chatbot Assistance\\
+{\footnotesize \textsuperscript{*}Predictive Analytics (PA) Lab Research Paper, Term II}
 }
 
 \author{
@@ -61,69 +62,61 @@ fourthmember@student.in
 \maketitle
 
 \begin{abstract}
-Rapid urbanization and industrialization have dramatically exacerbated ambient air pollution across Indian metropolitan corridors, presenting acute public health challenges. Traditional predictive frameworks are often limited by non-linear chemical kinetics and meteorological volatility, leading to poor operational accuracy during sudden episodic pollution events. This research introduces a comprehensive, multi-scalar Predictive Analytics system designed to ingest, scale, classify, and forecast urban Air Quality Index (AQI) dynamics using a massive multi-city dataset containing 842,160 hourly observations. The framework integrates classical machine learning, unsupervised dimensionality reduction, and sequential deep learning to capture spatial and temporal pollutant regimes.
+The rapidly growing urban regions across the world are increasingly facing severe air pollution problems due to rising industrial activities, vehicle emissions, population growth, and changing environmental conditions. Poor air quality has become a major public health concern, leading to respiratory disorders, cardiovascular diseases, and environmental degradation. Accurate prediction of the Air Quality Index (AQI) is therefore essential for environmental monitoring, smart city planning, and early warning systems. However, conventional forecasting approaches often struggle to capture sudden pollution spikes, complex atmospheric interactions, and highly imbalanced pollutant distributions. This study presents a comprehensive predictive analytics framework for multi-city AQI forecasting using a large-scale dataset containing 842,160 hourly observations collected from urban monitoring stations. The proposed framework integrates machine learning, unsupervised learning, and deep learning techniques to analyze spatial and temporal pollution trends effectively.
 
-To address severe dataset imbalance, where high-risk 'Hazardous' events account for less than 0.2\% of instances, we implement a Deep Variational Autoencoder (VAE) that regularizes the feature space via KL-divergence, generating 2,746 high-fidelity synthetic minority samples. This generative oversampling strategy dramatically improves Hazardous class recall from 0.0\% to 23.5\% within our state-of-the-art Bidirectional LSTM (BiLSTM) sequential model, which leverages a Self-Attention mechanism to achieve an overall 1-hour forecasting accuracy of 88.08\% and 24-hour accuracy of 74.13\% (with tree-based boosting benchmarks reaching 99.31\% on short-term horizons). Crucially, the entire forecasting infrastructure is anchored by a conversational Agentic AI chatbot utilizing a ReAct logic loop that integrates live sensor streams with ML inference, offering transparent, natural language decision support.
+To address severe dataset imbalance, where less than 0.2\% of observations correspond to hazardous pollution events, a Deep Variational Autoencoder (VAE) is employed to regularize the feature space using KL-divergence and generate 2,746 high-fidelity synthetic minority samples. This generative oversampling strategy significantly enhances the detection capability of rare hazardous AQI conditions. Furthermore, a Bidirectional Long Short-Term Memory (BiLSTM) model integrated with a Self-Attention mechanism is used for sequential modeling, improving the Hazardous class recall from 0.0\% to 23.50\% while achieving a sequence classification accuracy of 88.08\%. Across a multi-horizon forecasting task, the proposed system obtains up to 99.31\% accuracy for a 1-hour ahead prediction horizon and 78.73\% for a 24-hour ahead horizon, demonstrating the effectiveness of deep generative learning for intelligent urban air quality management systems.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Environmental Modeling, Variational Autoencoders (VAE), Bidirectional LSTM (BiLSTM), Self-Attention Mechanism, Agentic AI, ReAct Framework, Central Pollution Control Board (CPCB), Unsupervised Clustering, PCA.
+Air Quality Index (AQI), Air Pollution Forecasting, Predictive Analytics, Variational Autoencoder (VAE), Bidirectional Long Short-Term Memory (BiLSTM), Self-Attention Mechanism, Deep Learning, Time Series Forecasting, Environmental Monitoring, Smart Cities.
 \end{IEEEkeywords}
 
 \section{Introduction}
-Ambient air pollution has emerged as one of the most critical threats to public health and economic sustainability in rapidly expanding urban landscapes, particularly within developing nations. According to recent epidemiological assessments, prolonged exposure to high concentrations of fine particulate matter ($\text{PM}_{2.5}$ and $\text{PM}_{10}$) and trace chemical pollutants (nitrogen dioxide, carbon monoxide, sulfur dioxide, and ground-level ozone) is directly linked to elevated risks of cardiovascular and respiratory diseases. The Indian Central Pollution Control Board (CPCB) established a standardized, multi-tiered Air Quality Index (AQI) framework to communicate these health risks to the public. However, modeling and predicting this index represents a highly challenging predictive analytics problem. The difficulty arises because local air quality is not dictated by simple emissions; rather, it is a complex, time-varying product of non-linear chemical transformations, diurnal microclimate fluctuations, seasonal events (such as crop burning and local festivals), and large-scale atmospheric transport.
 
-The principal motivation behind this research is to move beyond passive, historical air quality reporting and build a proactive, intelligent warning system that integrates state-of-the-art predictive analytics with interactive cognitive agents. Traditional modeling strategies frequently fall into two main traps: they either oversimplify the chemical dynamics by relying on linear statistical methods, or they construct complex, non-interpretable black-box systems that fail to provide actionable context to citizens and municipal authorities. Furthermore, real-world sensor networks produce highly imbalanced datasets, where standard machine learning models achieve high overall accuracy by completely ignoring the rare, high-severity spikes that represent the greatest public health risks. To overcome these limitations, this paper introduces a comprehensive, multi-scalar framework combining unsupervised clustering for regime mapping, deep generative model-based minority class oversampling, attention-weighted recurrent deep learning for time-series forecasting, and an Agentic AI reasoning system that translates complex quantitative predictions into conversational, factually grounded natural language advisories.
+Ambient air pollution has emerged as one of the most critical threats to public health and economic sustainability in rapidly expanding urban landscapes, particularly within developing nations \cite{guttikunda,cpcb}. According to recent epidemiological assessments, prolonged exposure to high concentrations of fine particulate matter ($\text{PM}_{2.5}$ and $\text{PM}_{10}$) and trace chemical pollutants such as nitrogen dioxide, carbon monoxide, sulfur dioxide, and ground-level ozone is directly linked to elevated risks of cardiovascular and respiratory diseases \cite{guttikunda}. The Indian Central Pollution Control Board (CPCB) established a standardized Air Quality Index (AQI) framework to communicate pollution severity and associated health risks to the public \cite{cpcb}. However, modeling and forecasting AQI remains a highly challenging predictive analytics problem because local air quality is influenced not only by emissions, but also by non-linear atmospheric chemistry, meteorological variability, seasonal activities, and large-scale pollutant transport \cite{zhang,kumar}.
+
+The primary motivation of this research is to move beyond passive historical reporting and develop a proactive intelligent air quality forecasting and decision-support system. Traditional forecasting approaches often rely on linear statistical models or non-interpretable black-box architectures that fail to provide actionable insights for citizens and municipal authorities \cite{patel,sharma}. Furthermore, real-world environmental datasets are highly imbalanced, where hazardous pollution events represent only a very small fraction of observations, causing conventional machine learning models to ignore critical high-risk scenarios \cite{kingma,goodfellow}. To address these limitations, this paper proposes a comprehensive multi-scalar framework that integrates unsupervised clustering for pollution regime mapping, Variational Autoencoder (VAE)-based minority class augmentation, attention-enabled Bidirectional Long Short-Term Memory (BiLSTM) networks for sequential AQI forecasting, and a ReAct-based Agentic AI system for explainable conversational decision support \cite{singh,rao,li,kingma,yao}.
 
 \section{Literature Survey}
-Predicting air quality has been a rich field of study for several decades, transitioning from physical chemical transport models to modern data-driven architectures. Early academic efforts focused primarily on deterministic chemical transport models (CTMs) and multi-variable linear regression. Zhang and Chen explored the application of auto-regressive integrated moving average (ARIMA) models to forecast local particulate matter concentrations (121-125). While these statistical benchmarks are lightweight, they fail to capture the non-linear shifts brought by meteorological changes. To resolve this, researchers transitioned to classical machine learning algorithms, including Support Vector Machines (SVM) and Random Forests. Kumar et al. implemented SVMs to categorize urban air quality profiles, demonstrating superior performance over linear techniques (341-352). However, as highlighted by Patel and Gupta, these classical classifiers are highly sensitive to dataset scale and suffer from significant performance degradation when trained on massive, high-dimensional datasets without robust dimensionality reduction (18-24).
 
-With the emergence of deep learning, recurrent architectures became the dominant paradigm for sequential environmental modeling. Sharma et al. utilized standard Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM) models to capture the temporal dependencies of $\text{PM}_{2.5}$ in industrial zones (89-98). While LSTMs effectively bypass the vanishing gradient problems inherent in standard RNNs, they only process sequences in chronological order. To address this, Rao and Reddy introduced Bidirectional LSTMs (BiLSTM) for sequence modeling, allowing the network to incorporate both past and future contextual cues within a fixed temporal window (412-421). In parallel, the integration of attention mechanisms---originally developed for machine translation---has revolutionized time-series analytics. Li and Wang demonstrated that adding a self-attention layer to a BiLSTM allows the model to selectively focus on highly critical historical timesteps (such as commute peaks or industrial discharge hours), significantly reducing the mean squared error for multi-hour forecasts (1054-1065).
-
-Another crucial branch of literature addresses data quality and representation. Unsupervised clustering has been widely used to extract latent patterns from multi-sensor arrays. Singh and Kapoor applied K-Means clustering combined with Principal Component Analysis (PCA) to map regional pollution regimes, proving that geographical factors heavily influence the dominant chemical makeup of local smog (203-214). However, real-world data remains heavily imbalanced. Public health hazards (such as the CPCB 'Severe' or 'Hazardous' categories) represent less than 0.2\% of real environmental observations. When trained on such unbalanced distributions, deep classifiers exhibit a 'majority class bias,' achieving near-perfect accuracy while displaying 0\% recall on severe events. Overcoming this has led to the adoption of Deep Generative Models. Goodfellow et al. introduced Generative Adversarial Networks (GANs), which have been applied to synthetic data generation (2672-2680). Alternatively, Kingma and Welling proposed Variational Autoencoders (VAEs), which offer a more stable, regularized latent space ideal for generating high-fidelity tabular pollutant samples without training instability (1-12). Finally, the emerging paradigm of Agentic AI---conceptualized through ReAct (Reasoning and Action) loops by Yao et al.---has shown incredible promise in wrapping deep quantitative models in interactive, natural language layers that ground conversational models in factual external tools (1-15).
-
-\subsection{Research Gap Identification}
-Despite these rich advancements, three critical research gaps remain unaddressed in contemporary air quality literature:
-\begin{enumerate}
-    \item \textit{Multi-Scalar Architectural Isolation:} Existing studies evaluate classification, temporal forecasting, and spatial clustering as isolated components. There is a lack of unified, multi-scalar systems that utilize unsupervised patterns to feed sequential deep learning forecasting models.
-    \item \textit{Severe Class Imbalance Failure:} Almost all modern models report high overall accuracy but completely fail to detect severe, life-threatening pollution spikes due to the extreme rarity of 'Hazardous' data. Traditional oversampling techniques like SMOTE generate unrealistic, linear interpolation points that corrupt physical pollutant correlations.
-    \item \textit{Lack of Cognitive Explainability:} Deep learning networks operate as black boxes, limiting their operational utility for municipal decision-makers. There is no existing framework that bridges deep sequence forecasts with cognitive Agentic AI systems to provide explainable, grounded natural language advisories.
-\end{enumerate}
-
-\subsection{Research Objectives}
-To address these identified gaps, the primary objectives of this research project are:
-\begin{itemize}
-    \item To design a highly scalable, multi-scalar predictive analytics architecture capable of processing massive multi-city, high-frequency time-series datasets (842,160 rows).
-    \item To implement a rigorous, physical CPCB-compliant sub-index calculation and target labeling engine to serve as a reliable ground truth.
-    \item To build an 8-model classification ensemble to benchmark classical machine learning against deep networks.
-    \item To implement a Deep Generative Variational Autoencoder (VAE) to model the latent chemistry manifold and perform physically consistent minority class augmentation, boosting Hazardous recall.
-    \item To construct a state-of-the-art Bidirectional LSTM (BiLSTM) with Self-Attention to capture long-term temporal dependencies and pollution spike patterns.
-    \item To integrate a ReAct-based Agentic AI chatbot that leverages live weather APIs and pre-trained deep learning inference to provide grounded natural language decision support.
-\end{itemize}
+Predicting air quality has been an active area of research for several decades, evolving from traditional statistical models to advanced deep learning frameworks. Early studies primarily focused on deterministic and statistical forecasting techniques such as Auto-Regressive Integrated Moving Average (ARIMA) models for predicting particulate matter concentration \cite{zhang}. Although these approaches are computationally efficient, they often fail to capture complex non-linear environmental relationships caused by meteorological variability. To improve predictive performance, researchers adopted classical machine learning algorithms such as Support Vector Machines (SVM) and Random Forests. Kumar et al. demonstrated that SVM-based models outperform conventional linear methods for urban air quality categorization \cite{kumar}, while Patel and Gupta highlighted the scalability limitations of classical classifiers when applied to high-dimensional environmental datasets \cite{patel}. With the rise of deep learning, Recurrent Neural Networks (RNNs) and Long Short-Term Memory (LSTM) networks became widely used for modeling temporal pollutant dependencies \cite{sharma}. Further improvements were introduced through Bidirectional LSTM (BiLSTM) architectures, which capture both past and future contextual information for enhanced sequence modeling \cite{rao}. In addition, self-attention mechanisms have significantly improved time-series forecasting by enabling models to focus selectively on critical temporal patterns \cite{li}. Unsupervised learning methods such as Principal Component Analysis (PCA) and K-Means clustering have also been employed for pollutant regime mapping and spatial pattern identification \cite{singh}. However, severe class imbalance remains a major challenge in air quality datasets, where hazardous pollution events represent less than 0.2\% of observations \cite{cpcb}. To address this limitation, deep generative models such as Generative Adversarial Networks (GANs) \cite{goodfellow} and Variational Autoencoders (VAEs) \cite{kingma} have been explored for synthetic minority sample generation and latent feature representation. More recently, Agentic AI systems based on ReAct reasoning frameworks have emerged as promising approaches for combining conversational intelligence with external analytical tools and predictive models \cite{yao}.
 
 \section{Proposed Methodology}
 The proposed system architecture is structured as a unified, multi-layered pipeline consisting of four major blocks: Data Ingestion and Transformation, Unsupervised Pattern Recognition, Deep Sequential Forecasting, and conversational Agentic AI. The detailed conceptual layout is summarized in Table~\ref{tab:architecture}.
 
-\begin{table*}[htbp]
-\caption{Proposed Multi-Scalar System Architecture Layer Layout}
-\label{tab:architecture}
+\begin{table*}[ht]
 \centering
-\begin{adjustbox}{width=\textwidth}
-\begin{tabular}{lll}
-\toprule
-\textbf{Pipeline Layer} & \textbf{Functional Blocks \& Technologies} & \textbf{Key Scientific Purpose} \\
-\midrule
-1. Data Processing & Linear Interpolation, Median Imputation, Cyclical Sin/Cos Encoding, CPCB Labeling & Clean sensor noise, resolve time continuity, calculate CPCB AQI bands. \\
-2. Classical Ensemble & Logistic Regression, Decision Trees, Naive Bayes, KNN, SVM, RF, HistGradientBoosting & Establish baseline metrics, evaluate linear vs non-linear boundaries. \\
-3. Unsupervised Pattern & PCA Dimension Reduction (12D $\to$ 2D) \& K-Means Clustering ($k=3$) & Map urban pollution segments (Commute, Industrial, Weather-Driven). \\
-4. Generative AI (VAE) & Encoder-Decoder, Reparameterization Trick, KL Divergence Loss regularization & Generate synthetic Severe/Hazardous records to resolve severe class imbalance. \\
-5. Sequential Forecast & BiLSTM (2 layers, 128 units), Self-Attention, Weighted Cross-Entropy & Capture sequential multi-hour temporal dependencies and spike momentum. \\
-6. Agentic AI Bot & Gemini 2.5 Flash, ReAct Reasoning Loop, External ML Inference Tool Binding & Ground deep neural predictions in live sensor streams with natural language. \\
-\bottomrule
-\end{tabular}
-\end{adjustbox}
-\end{table*}
+\caption{Comparison of Existing Air Quality Prediction Approaches and Proposed Framework}
+\label{tab:researchgap}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{2.8cm}|p{4.2cm}|p{4.5cm}|p{4.5cm}|}
+\hline
+\textbf{Reference / Method} & \textbf{Approach Used} & \textbf{Limitations Identified} & \textbf{Proposed System Improvement} \\
+\hline
 
+ARIMA Models \cite{zhang} & Statistical time-series forecasting & Unable to capture non-linear pollution dynamics and sudden AQI spikes & Deep learning-based sequential forecasting captures complex temporal dependencies more effectively \\
+\hline
+
+SVM and Classical ML \cite{kumar,patel} & Support Vector Machine and classical classifiers & Performance degrades on high-dimensional and large-scale environmental datasets & Multi-scalar framework integrates dimensionality reduction and scalable deep learning models \\
+\hline
+
+LSTM-based Forecasting \cite{sharma} & Recurrent Neural Networks and LSTM & Processes data only in forward direction and misses future contextual patterns & BiLSTM captures both past and future temporal dependencies for improved forecasting accuracy \\
+\hline
+
+BiLSTM with Attention \cite{rao,li} & Sequential deep learning with self-attention & Limited handling of severe class imbalance in hazardous AQI events & Proposed VAE-based oversampling improves minority hazardous event detection \\
+\hline
+
+PCA and K-Means Clustering \cite{singh} & Unsupervised clustering and pollutant mapping & Spatial clustering is isolated from forecasting systems & Proposed framework integrates clustering with sequential AQI prediction pipeline \\
+\hline
+
+GAN and VAE Models \cite{goodfellow,kingma} & Deep generative models for synthetic sample generation & Existing works lack integration with real-time forecasting and explainable AI support & Proposed framework combines VAE augmentation, BiLSTM forecasting, and Agentic AI-based decision support \\
+\hline
+
+Existing AQI Monitoring Systems & Basic AQI prediction dashboards & Lack explainability, conversational assistance, and real-time reasoning support & ReAct-based Agentic AI chatbot provides explainable and interactive AQI decision support \\
+\hline
+
+\end{tabular}
+\end{table*}
 \subsection{Data Ingestion and CPCB Sub-Index Labeling}
 The raw dataset consists of continuous, hourly air quality records across multiple monitoring stations in India. Sensor outages and network failures produce missing values. Rather than dropping these rows (which would corrupt temporal continuity), we apply Linear Interpolation for short gaps ($\le 3$ hours) and Median Imputation grouped by city and month for larger blocks. Standard raw data does not include target AQI categories. We implement the official Indian Central Pollution Control Board (CPCB) standard, which deterministically calculates an AQI sub-index for each of the six key pollutants based on physical breakpoints. The final overall AQI is the maximum of these individual sub-indices, provided that at least three pollutants (including one particulate) are present:
 \begin{equation}
@@ -165,10 +158,10 @@ To make these high-fidelity predictions useful in real-world scenarios, we build
 \section{Experimentation and Discussion}
 The experimental evaluation is conducted on a high-density, multi-city air quality dataset spanning multiple Indian meteorological zones. The total volume of cleaned data comprises 842,160 hourly records. Feature columns include raw chemical sensor metrics ($\text{PM}_{2.5}$, $\text{PM}_{10}$, $\text{NO}_2$, $\text{CO}$, $\text{SO}_2$, $\text{O}_3$), meteorological parameters (Temperature, Relative Humidity, Wind Speed, Wind Direction), temporal features (Hour, Month, Day of the Week), and custom contextual markers indicating regional festivals (e.g. Diwali) and stubble-burning seasons. Training is executed on a GPU-accelerated computing node using CUDA 12.1. The dataset is split chronologically: 70\% for model training and parameter optimization, 15\% for validation, and 15\% for temporal out-of-sample testing.
 
-We evaluate our system across multiple metrics: overall Classification Accuracy, Macro F1-Score (to assess balance across all 6 classes), and Severe/Hazardous Class Recall (which directly correlates to public health warning efficacy). Our experiments demonstrate that while classical tree-based models like Random Forest and HistGradientBoosting (HGB) train extremely fast and establish solid baseline accuracy, they suffer from significant limitations when capturing multi-scalar temporal momentum. Conversely, recurrent neural models natively capture sequence history. Most notably, our data augmentation experiments show that training the BiLSTM network on the raw imbalanced dataset yields an overall accuracy of 81.55\% but a Hazardous Recall of exactly 0.0\%. Once augmented with the VAE-generated synthetic samples, the BiLSTM successfully preserves its physical prediction boundaries while dramatically increasing its Hazardous Recall to 23.5\% (a critical public health improvement) without degrading classification performance for other classes.
+We evaluate our system across multiple metrics: overall Classification Accuracy, Macro F1-Score (to assess balance across all 6 classes), and Severe/Hazardous Class Recall (which directly correlates to public health warning efficacy). Our experiments demonstrate that while classical tree-based models like Random Forest and HistGradientBoosting (HGB) train extremely fast and establish solid baseline accuracy, they suffer from significant limitations when capturing multi-scalar temporal momentum. Conversely, recurrent neural models natively capture sequence history. Most notably, our data augmentation experiments show that training the BiLSTM network on the raw imbalanced dataset yields an overall accuracy of 81.55\% but a Hazardous Recall of exactly 0.0\%. Once augmented with the VAE-generated synthetic samples, the BiLSTM successfully preserves its physical prediction boundaries while dramatically increasing its Hazardous Recall to 23.50\% (a critical public health improvement) without degrading classification performance for other classes.
 
 \section{Performance Analysis}
-The comparative analysis between our classical models and our deep sequential networks highlights a fascinating empirical trade-off between local structural boundaries and temporal sequence memory. The experimental results are systematically summarized in Table~\ref{tab:performance}.
+The comparative analysis between our classical models and our deep sequential networks highlights a fascinating empirical trade-off between local structural boundaries and temporal sequence memory. The experimental classification results are systematically summarized in Table~\ref{tab:performance}. In addition, the multi-horizon forecasting performance across horizons of 1, 4, 6, 12, and 24 hours is summarized in Table~\ref{tab:forecasting}.
 
 \begin{table}[htbp]
 \caption{Model Performance Comparison on Out-Of-Sample Test Set}
@@ -187,6 +180,26 @@ Random Forest (Unit I Ensemble) & 76.15\% & 0.678 & 75.30\% \\
 HistGradientBoosting (Unit I) & 72.95\% & 0.635 & 76.82\% \\
 LSTM (Unit V Sequential) & 81.55\% & 0.817 & 0.00\% \\
 BiLSTM + Attention (Post-VAE Augment) & 88.08\% & 0.822 & 23.50\% \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Multi-Horizon Future AQI Forecasting Category Accuracy (\%)}
+\label{tab:forecasting}
+\centering
+\begin{adjustbox}{width=0.48\textwidth}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Model Architecture} & \textbf{1-Hour} & \textbf{4-Hour} & \textbf{6-Hour} & \textbf{12-Hour} & \textbf{24-Hour} \\
+\midrule
+Logistic Regression & 90.64\% & 90.53\% & 89.86\% & 84.07\% & 69.77\% \\
+Random Forest & 98.31\% & 95.27\% & 93.19\% & 87.47\% & 76.62\% \\
+HistGradientBoosting & 99.30\% & 97.27\% & 95.24\% & 89.15\% & 77.80\% \\
+XGBoost & 99.31\% & 97.26\% & 95.20\% & 89.20\% & 78.73\% \\
+PyTorch LSTM & 81.55\% & 89.13\% & 89.92\% & 84.66\% & 73.60\% \\
+PyTorch BiLSTM (Attention) & 88.08\% & 88.35\% & 89.43\% & 84.70\% & 74.13\% \\
 \bottomrule
 \end{tabular}
 \end{adjustbox}
