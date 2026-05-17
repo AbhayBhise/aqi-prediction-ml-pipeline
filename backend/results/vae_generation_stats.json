@@ -1,0 +1,24 @@
+{
+    "n_generated": 1000,
+    "latent_dim_used": 8,
+    "best_config": {
+        "latent_dim": 8,
+        "batch_size": 32,
+        "final_loss": 0.000954,
+        "config_label": "latent=8, batch=32"
+    },
+    "generated_pm25_mean": 33.89217758178711,
+    "generated_pm25_std": 23.837135314941406,
+    "real_pm25_mean": 34.62937599999999,
+    "real_pm25_std": 30.875604762508278,
+    "pca_variance_explained": [
+        0.16061614453792572,
+        0.13393032550811768
+    ],
+    "artifacts": [
+        "vae_loss_curve.png",
+        "vae_hyperparameter_grid.png",
+        "vae_latent_space.png",
+        "vae_real_vs_synthetic.png"
+    ]
+}

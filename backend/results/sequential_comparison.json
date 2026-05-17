@@ -1,0 +1,14 @@
+{
+    "RNN": {
+        "accuracy": 0.5796,
+        "f1_score": 0.2524
+    },
+    "LSTM": {
+        "accuracy": 0.8183,
+        "f1_score": 0.6615
+    },
+    "BiLSTM": {
+        "accuracy": 0.8292,
+        "f1_score": 0.669
+    }
+}

@@ -1,0 +1,19 @@
+aqi_pa_v2_venv/
+__pycache__/
+*.pyc
+.env
+*.csv
+
+# Ignore massive files (>50MB) to satisfy GitHub's 100MB limit
+*random_forest.joblib
+*rf_model.joblib
+*X_clustering_scaled.joblib
+*X_train_Research.joblib
+*X_train_UI.joblib
+*vae_labeler.pkl
+*.log
+
+# Git backups
+.git_old/
+
+

@@ -1,0 +1,46 @@
+{
+  "results": [
+    {
+      "latent_dim": 4,
+      "batch_size": 32,
+      "final_loss": 0.045886,
+      "config_label": "latent=4, batch=32"
+    },
+    {
+      "latent_dim": 4,
+      "batch_size": 64,
+      "final_loss": 0.050405,
+      "config_label": "latent=4, batch=64"
+    },
+    {
+      "latent_dim": 8,
+      "batch_size": 32,
+      "final_loss": 0.000954,
+      "config_label": "latent=8, batch=32"
+    },
+    {
+      "latent_dim": 8,
+      "batch_size": 64,
+      "final_loss": 0.001391,
+      "config_label": "latent=8, batch=64"
+    },
+    {
+      "latent_dim": 16,
+      "batch_size": 32,
+      "final_loss": 0.001154,
+      "config_label": "latent=16, batch=32"
+    },
+    {
+      "latent_dim": 16,
+      "batch_size": 64,
+      "final_loss": 0.001451,
+      "config_label": "latent=16, batch=64"
+    }
+  ],
+  "best_config": {
+    "latent_dim": 8,
+    "batch_size": 32,
+    "final_loss": 0.000954,
+    "config_label": "latent=8, batch=32"
+  }
+}
