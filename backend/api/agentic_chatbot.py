@@ -78,9 +78,24 @@ class AQIAgenticBot:
                 "purpose": "Addressing class imbalance to ensure public health safety during extreme pollution events."
             },
             "forecasting_results": {
-                "top_performing_model": "Bi-Directional LSTM with Attention",
-                "avg_accuracy_1h": "99.3%",
-                "avg_accuracy_24h": "92.4%",
+                "top_performing_sequential_model": "Bi-Directional LSTM with Attention",
+                "bilstm_sequence_accuracy": "88.08%",
+                "bilstm_macro_f1": "0.822",
+                "bilstm_hazardous_recall": "23.50%",
+                "multi_horizon_forecasting_accuracy": {
+                    "1h_horizon": {
+                        "XGBoost": "99.31%",
+                        "HistGradientBoosting": "99.30%",
+                        "RandomForest": "98.31%",
+                        "Bi-Directional LSTM (Attention)": "88.08%"
+                    },
+                    "24h_horizon": {
+                        "XGBoost": "78.73%",
+                        "HistGradientBoosting": "77.80%",
+                        "RandomForest": "76.62%",
+                        "Bi-Directional LSTM (Attention)": "74.13%"
+                    }
+                },
                 "metrics": ["Macro F1", "Severe Class Recall", "Balanced Accuracy"]
             },
             "inference_pipeline": {
@@ -195,7 +210,7 @@ class AQIAgenticBot:
             resp = ""
             
             if "model" in q or "accuracy" in q or "best" in q:
-                resp = "Based on our project metrics, the BiLSTM (Bidirectional LSTM) with Attention is the top-performing model, achieving 99.3% accuracy for 1-hour forecasts and 92.4% for 24-hour forecasts."
+                resp = "Based on our project metrics, the Bi-Directional LSTM with Attention is our top sequential model, achieving 88.08% sequence classification accuracy and 23.50% Hazardous recall. For 1-hour ahead regression forecasting, XGBoost achieves 99.31% accuracy, while for 24-hour ahead forecasting, the top performer is XGBoost at 78.73% followed by BiLSTM at 74.13%."
             elif "row" in q or "size" in q or "dataset" in q:
                 resp = "Our dataset contains exactly 842,160 rows of hourly, multi-city AQI data."
             elif "city" in q or "cities" in q:
