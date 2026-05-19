@@ -114,6 +114,15 @@ logging.setLogRecordFactory(record_factory)
 @app.before_request
 def assign_request_id():
     g.request_id = str(uuid.uuid4())
+    g.start = time.time()
+
+@app.after_request
+def log_request(response):
+    start = getattr(g, 'start', None)
+    if start:
+        duration = time.time() - start
+        logging.info(f"Request: {request.method} {request.path} - Status: {response.status_code} - Took {duration:.2f}s")
+    return response
 
 # ── API Rate Limiting ──────────────────────────────────────────────────────
 limiter = Limiter(
@@ -440,6 +449,9 @@ def _build_forecast_input(city, current_features, current_datetime, model):
     return pd.DataFrame([{col: feature_row[col] for col in columns}]), dt
 
 # ── Startup sequence ───────────────────────────────────────────────────────
+print("=" * 60)
+print("           AQI SYSTEM STARTING (PRODUCTION MODE)             ")
+print("=" * 60)
 print("[STARTUP] Pre-startup initialization...")
 print_memory_usage("Pre-Startup")
 
@@ -451,6 +463,7 @@ print("[STARTUP] Eagerly preloading ML classification model ensemble...")
 load_objects()  # Eagerly preload classification model ensemble
 print_memory_usage("Post-Model Warmup")
 print("[STARTUP] Flask application startup warmup complete. Ready to serve.")
+print("=" * 60)
 
 # ── Global Error Handling ──────────────────────────────────────────────────
 from werkzeug.exceptions import HTTPException
