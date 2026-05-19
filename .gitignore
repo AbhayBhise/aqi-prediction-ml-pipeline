@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 .env
 *.csv
+!data/raw/INDIA_AQI_CLEANED_FINAL.csv
 
 # Ignore massive files (>50MB) to satisfy GitHub's 100MB limit
 *random_forest.joblib
@@ -12,6 +13,26 @@ __pycache__/
 *X_train_UI.joblib
 *vae_labeler.pkl
 *.log
+
+# Whitelist only production models and testing metrics required at runtime
+!data/processed/scaler_UI.joblib
+!data/processed/target_mapping.joblib
+!data/processed/rf_model.joblib
+!data/processed/all_models/*.joblib
+!data/processed/forecast_models/**/*.joblib
+!data/processed/X_test_Research.joblib
+!data/processed/y_test_Research.joblib
+!data/processed/best_lstm_model.pt
+!data/processed/improved_lstm_model.pt
+!data/processed/improved_lstm_scaler.joblib
+!data/processed/label_encoder.joblib
+!data/processed/lstm_scaler.joblib
+!backend/models/*.pt
+!backend/models/*.keras
+!backend/models/*.pkl
+backend/models/vae_labeler.pkl
+!backend/results/*.json
+!backend/results/**/*.json
 
 # Git backups
 .git_old/

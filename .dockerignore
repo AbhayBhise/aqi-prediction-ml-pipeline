@@ -1,0 +1,16 @@
+.git
+.git_old
+node_modules
+frontend/
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints
+.env
+venv
+aqi_pa_v2_venv
+*.ipynb
+*.docx
+*.zip
+*.tex

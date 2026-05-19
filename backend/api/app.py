@@ -5,6 +5,7 @@ import requests
 import uuid
 import logging
 import cachetools
+import psutil
 from tenacity import retry, stop_after_attempt, wait_exponential
 from dotenv import load_dotenv
 from agentic_chatbot import AQIAgenticBot
@@ -50,6 +51,11 @@ plt.rcParams["figure.figsize"] = (10, 6)
 plt.rcParams["axes.spines.top"]    = False
 plt.rcParams["axes.spines.right"]  = False
 np.random.seed(42)
+
+def print_memory_usage(stage=""):
+    process = psutil.Process(os.getpid())
+    ram_mb = process.memory_info().rss / (1024 * 1024)
+    print(f"[MEMORY LOG] {stage} - RAM Usage: {ram_mb:.2f} MB")
 # ───────────────────────────────────────────────────────────────────────────
 
 # ── Max cached dynamic-plot combinations (LRU eviction) ───────────────────
@@ -434,9 +440,17 @@ def _build_forecast_input(city, current_features, current_datetime, model):
     return pd.DataFrame([{col: feature_row[col] for col in columns}]), dt
 
 # ── Startup sequence ───────────────────────────────────────────────────────
+print("[STARTUP] Pre-startup initialization...")
+print_memory_usage("Pre-Startup")
+
+print("[STARTUP] Loading dataset...")
 _load_dataset_startup()  # dataset first (pure I/O, no GPU needed)
-# Lazy load ML models on first request instead of startup to prevent Render timeouts
-# load_objects() 
+print_memory_usage("Post-Dataset Load")
+
+print("[STARTUP] Eagerly preloading ML classification model ensemble...")
+load_objects()  # Eagerly preload classification model ensemble
+print_memory_usage("Post-Model Warmup")
+print("[STARTUP] Flask application startup warmup complete. Ready to serve.")
 
 # ── Global Error Handling ──────────────────────────────────────────────────
 from werkzeug.exceptions import HTTPException
@@ -1308,4 +1322,5 @@ def chatbot():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=False, port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)
