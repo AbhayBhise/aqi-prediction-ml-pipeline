@@ -75,10 +75,11 @@ else:
     CORS(app)  # Fallback for local dev if not set, but warned in production
 
 # Security Headers & Payload Limits
+is_prod = os.getenv("FLASK_ENV") == "production"
 app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024  # 1MB limit
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SECURE=is_prod,
     SESSION_COOKIE_SAMESITE='Lax',
 )
 
@@ -88,7 +89,11 @@ csp = {
     'script-src': ["'self'", "'unsafe-inline'", "https://cdn.plot.ly"], # Example fallback
     'style-src': ["'self'", "'unsafe-inline'"],
 }
-Talisman(app, content_security_policy=csp, content_security_policy_report_only=True, content_security_policy_report_uri='/csp-report')
+Talisman(app, 
+         force_https=is_prod, 
+         content_security_policy=csp, 
+         content_security_policy_report_only=True, 
+         content_security_policy_report_uri='/csp-report')
 
 # ── Structured Logging & Request IDs ───────────────────────────────────────
 logging.basicConfig(
