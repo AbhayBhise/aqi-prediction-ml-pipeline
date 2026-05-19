@@ -249,7 +249,7 @@ const GenerativeAI = () => {
 
       {/* Latent Space + Real vs Synthetic */}
       <div className="mb-12">
-        <SectionDivider title="Generated Samples Analysis" badge="1,000 Synthetic Samples" />
+        <SectionDivider title="Generated Samples Analysis" badge={`${genStats?.n_generated?.toLocaleString() || "2,746"} Synthetic Samples`} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div
             className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden cursor-zoom-in hover:ring-2 hover:ring-purple-500/30 transition-all group"
@@ -366,7 +366,7 @@ const GenerativeAI = () => {
               The VAE generative model was trained on all 71 environmental features from 842,160 samples of the India multi-city dataset.
               Hyperparameter tuning was performed across {tuningData?.results?.length || 6} configurations (latent ∈ {'{4, 8, 16}'} × batch ∈ {'{32, 64}'}).
               The optimal configuration — <strong className="text-cyan-400">{bestConfig?.config_label}</strong> — achieved the lowest reconstruction loss of <strong className="text-cyan-400">{bestConfig?.final_loss}</strong>.
-              The decoder successfully generates 1,000 synthetic AQI samples whose PM2.5 distribution closely matches real observations,
+              The decoder successfully generates {genStats?.n_generated?.toLocaleString() || '2,746'} synthetic AQI samples whose PM2.5 distribution closely matches real observations,
               confirming the model has learned the underlying data manifold.
             </p>
             <div className="flex flex-wrap gap-2 mt-4">

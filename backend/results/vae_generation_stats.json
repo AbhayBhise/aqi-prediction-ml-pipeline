@@ -1,5 +1,5 @@
 {
-    "n_generated": 1000,
+    "n_generated": 2746,
     "latent_dim_used": 8,
     "best_config": {
         "latent_dim": 8,

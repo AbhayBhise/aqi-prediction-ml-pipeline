@@ -4,11 +4,11 @@
         "f1_score": 0.2524
     },
     "LSTM": {
-        "accuracy": 0.8183,
-        "f1_score": 0.6615
+        "accuracy": 0.8155,
+        "f1_score": 0.8169
     },
     "BiLSTM": {
-        "accuracy": 0.8292,
-        "f1_score": 0.669
+        "accuracy": 0.8808,
+        "f1_score": 0.8808
     }
 }
