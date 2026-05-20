@@ -227,8 +227,8 @@ FORECAST_MODEL_KEYS = {
     "random_forest": "random_forest.joblib",
     "hist_gradient_boosting": "hist_gradient_boosting.joblib",
     "xgboost": "xgboost.joblib",
-    "lstm": "lstm_horizon.pt",
-    "bilstm": "bilstm_horizon.pt",
+    "lstm": "lstm.joblib",
+    "bilstm": "bilstm.joblib",
 }
 FORECAST_LABELS = {
     "logistic_regression": "Logistic Regression",
