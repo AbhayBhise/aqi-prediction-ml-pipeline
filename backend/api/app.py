@@ -93,7 +93,8 @@ Talisman(app,
          force_https=is_prod, 
          content_security_policy=csp, 
          content_security_policy_report_only=True, 
-         content_security_policy_report_uri='/csp-report')
+         content_security_policy_report_uri='/csp-report',
+         frame_options=None)
 
 # ── Structured Logging & Request IDs ───────────────────────────────────────
 logging.basicConfig(
