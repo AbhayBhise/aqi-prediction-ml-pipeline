@@ -6,3 +6,4 @@ data/processed/X_test_Research.joblib filter=lfs diff=lfs merge=lfs -text
 data/processed/forecast_models/*/random_forest.joblib filter=lfs diff=lfs merge=lfs -text
 data/processed/forecast_models/*/lstm.joblib filter=lfs diff=lfs merge=lfs -text
 data/processed/forecast_models/*/bilstm.joblib filter=lfs diff=lfs merge=lfs -text
+*.csv.gz filter=lfs diff=lfs merge=lfs -text
