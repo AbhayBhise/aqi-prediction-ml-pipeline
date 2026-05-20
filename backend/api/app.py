@@ -336,23 +336,39 @@ def _load_forecast_model(horizon, model_key):
         with model_lock:
             if cache_key not in CACHE['forecast_models']:
                 if model_key in ['lstm', 'bilstm']:
-                    model_path = os.path.join(PROJECT_ROOT, 'backend', 'models', f"{model_key}_{horizon}h.pt")
-                    scaler_path = os.path.join(PROJECT_ROOT, 'backend', 'models', f"scaler_{horizon}h.joblib")
-                    meta_path = os.path.join(PROJECT_ROOT, 'backend', 'models', f"meta_{horizon}h.json")
-                    if not all(os.path.exists(path) for path in [model_path, scaler_path, meta_path]):
-                        raise FileNotFoundError(f"Sequential forecast assets missing for {model_key} {horizon}h.")
+                    try:
+                        model_path = os.path.join(PROJECT_ROOT, 'backend', 'models', f"{model_key}_{horizon}h.pt")
+                        scaler_path = os.path.join(PROJECT_ROOT, 'backend', 'models', f"scaler_{horizon}h.joblib")
+                        meta_path = os.path.join(PROJECT_ROOT, 'backend', 'models', f"meta_{horizon}h.json")
+                        if not all(os.path.exists(path) for path in [model_path, scaler_path, meta_path]):
+                            raise FileNotFoundError(f"Sequential forecast assets missing for {model_key} {horizon}h.")
+                    except Exception as exc:
+                        raise RuntimeError(f"Sequential forecast asset lookup failed: {exc}") from exc
 
-                    with open(meta_path, 'r') as f:
-                        meta = json.load(f)
-                    features = meta.get("features") or []
-                    model = AQI_BiLSTM(len(features)) if model_key == 'bilstm' else AQI_LSTM(len(features))
-                    model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
-                    model.eval()
+                    try:
+                        with open(meta_path, 'r') as f:
+                            meta = json.load(f)
+                        features = meta.get("features") or []
+                    except Exception as exc:
+                        raise RuntimeError(f"Sequential forecast metadata loading failed: {exc}") from exc
+
+                    try:
+                        model = AQI_BiLSTM(len(features)) if model_key == 'bilstm' else AQI_LSTM(len(features))
+                        model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+                        model.eval()
+                    except Exception as exc:
+                        raise RuntimeError(f"Sequential forecast checkpoint loading failed: {exc}") from exc
+
+                    try:
+                        scaler = joblib.load(scaler_path)
+                    except Exception as exc:
+                        raise RuntimeError(f"Sequential forecast scaler loading failed: {exc}") from exc
+
                     CACHE['forecast_models'][cache_key] = {
                         "type": "sequential",
                         "model_key": model_key,
                         "model": model,
-                        "scaler": joblib.load(scaler_path),
+                        "scaler": scaler,
                         "features": features,
                         "classes": meta.get("classes") or list(FORECAST_CATEGORY_MAP.values()),
                     }
