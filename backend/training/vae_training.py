@@ -1,4 +1,4 @@
-﻿"""
+"""
 Variational Autoencoder (VAE) Training â€” AQI Dataset
 Matches the lab assignment: aqi_vae_hyperparameter_tuning.ipynb
 Saves all artifacts to backend/results/ for the dashboard.
@@ -311,7 +311,8 @@ try:
     print("      âœ“ vae_latent_space.png saved.")
 
     # 7d. Real vs Synthetic Distribution
-    z_sample = np.random.normal(size=(1000, LATENT_DIM))
+    N_GENERATED = 2746
+    z_sample = np.random.normal(size=(N_GENERATED, LATENT_DIM))
     generated_data = decoder.predict(z_sample, verbose=0)
     generated_data_unscaled = scaler.inverse_transform(generated_data)
     real_pm25 = X_sample[FEATURES[0]].values  # PM2.5
@@ -355,7 +356,7 @@ try:
 
     # Save generation stats
     gen_stats = {
-        "n_generated": 1000,
+        "n_generated": N_GENERATED,
         "latent_dim_used": LATENT_DIM,
         "best_config": best,
         "generated_pm25_mean": float(generated_data_unscaled[:, 0].mean()),

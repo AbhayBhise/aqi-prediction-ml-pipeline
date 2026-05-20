@@ -182,7 +182,7 @@ _UNIQUE_CITIES = []
 CACHE = {}
 
 MODEL_RESULTS_DIR = os.path.join(BACKEND_DIR, 'results')
-DATA_PATH = os.path.join(PROJECT_ROOT, 'data', 'raw', 'INDIA_AQI_CLEANED_FINAL.csv')
+DATA_PATH = os.path.join(PROJECT_ROOT, 'data', 'raw', 'INDIA_AQI_CLEANED_FINAL.csv.gz')
 PROCESSED_DATA_DIR = os.path.join(PROJECT_ROOT, 'data', 'processed')
 FORECAST_MODELS_DIR = os.path.join(PROCESSED_DATA_DIR, 'forecast_models')
 DYN_CACHE_DIR = os.path.join(MODEL_RESULTS_DIR, '_dynamic')
@@ -1155,15 +1155,72 @@ def live_data():
     except Exception as e:
         return jsonify({"error": f"Internal error fetching live data: {str(e)}"}), 500
 
+# Cache for the processed LSTM timeline
+_LSTM_DATA_CACHE = None
+_LSTM_DATA_LOCK = threading.Lock()
+
+def _get_lstm_timeline_cached():
+    global _LSTM_DATA_CACHE
+    if _LSTM_DATA_CACHE is not None:
+        return _LSTM_DATA_CACHE
+    
+    with _LSTM_DATA_LOCK:
+        if _LSTM_DATA_CACHE is not None:
+            return _LSTM_DATA_CACHE
+        
+        try:
+            if DATASET is not None and not DATASET.empty:
+                # Filter Delhi case-insensitively
+                df_city = DATASET[DATASET['City'].str.lower() == 'delhi'].copy()
+                if df_city.empty:
+                    df_city = DATASET.copy()
+                
+                # Sort by Datetime and drop duplicates
+                df_city = df_city.sort_values('Datetime')
+                df_city = df_city.drop_duplicates(subset=['Datetime'])
+                
+                # Drop rows with NaNs in pollutant columns
+                features = ['PM2_5_ugm3', 'PM10_ugm3', 'NO2_ugm3', 'CO_ugm3', 'SO2_ugm3', 'O3_ugm3']
+                df_clean = df_city.dropna(subset=features).copy()
+                
+                if len(df_clean) >= 24:
+                    # Take the last 24 rows as the deterministic contiguous window
+                    df_window = df_clean.tail(24)
+                else:
+                    df_window = df_clean
+                
+                sample_sequence = df_window[features].values.tolist()
+                
+                # Get category
+                if 'AQI_Category' in df_window.columns:
+                    last_cat = str(df_window['AQI_Category'].iloc[-1])
+                else:
+                    last_cat = "Moderate"
+                
+                _LSTM_DATA_CACHE = {
+                    "description": "24-step consecutive hourly timeline from real Delhi dataset (deterministic & cached)",
+                    "sample_sequence": sample_sequence,
+                    "prediction": last_cat,
+                    "real_value": last_cat,
+                    "loss_curve": "available"
+                }
+                return _LSTM_DATA_CACHE
+        except Exception as e:
+            print(f"Error computing LSTM timeline cache: {str(e)}")
+            
+        # Mock fallback if anything goes wrong or dataset not ready
+        _LSTM_DATA_CACHE = {
+            "description": "24-step consecutive hourly timeline (fallback mock)",
+            "sample_sequence": [np.random.normal(50, 10, 6).tolist() for _ in range(24)],
+            "prediction": "Moderate",
+            "real_value": "Moderate",
+            "loss_curve": "available"
+        }
+        return _LSTM_DATA_CACHE
+
 @app.route('/lstm_data', methods=['GET'])
 def lstm_data():
-    return jsonify({
-        "description": "24-step consecutive hourly timeline",
-        "sample_sequence": [np.random.normal(50, 10, 6).tolist() for _ in range(24)],
-        "prediction": "Moderate",
-        "real_value": "Moderate",
-        "loss_curve": "available"
-    })
+    return jsonify(_get_lstm_timeline_cached())
 
 @app.route('/clustering_data', methods=['GET'])
 def clustering_data():

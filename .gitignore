@@ -3,7 +3,8 @@ __pycache__/
 *.pyc
 .env
 *.csv
-!data/raw/INDIA_AQI_CLEANED_FINAL.csv
+!data/raw/INDIA_AQI_CLEANED_FINAL.csv.gz
+temp_hf_deploy/
 
 # Ignore massive files (>50MB) to satisfy GitHub's 100MB limit
 *random_forest.joblib

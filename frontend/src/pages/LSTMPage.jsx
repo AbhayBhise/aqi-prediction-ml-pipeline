@@ -37,36 +37,48 @@ const LSTMPage = () => {
       </div>
 
       {/* Comparison Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        {['RNN', 'LSTM', 'BiLSTM'].map((m) => (
-          <div key={m} className={`bg-slate-900/50 border ${m === 'BiLSTM' ? 'border-indigo-500/50' : 'border-slate-800'} rounded-3xl p-6 relative overflow-hidden transition-all duration-500 hover:scale-[1.05] hover:bg-slate-900/80 group`}>
-             <div className="flex justify-between items-start mb-4">
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{m} Architecture</span>
-                {m === 'BiLSTM' && <span className="bg-indigo-500 text-[8px] font-bold px-2 py-0.5 rounded-full text-white uppercase tracking-tighter shadow-[0_0_10px_rgba(99,102,241,0.5)]">Optimal</span>}
-             </div>
-             <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-black text-white">
-                    {metrics?.[m]?.accuracy ? (metrics[m].accuracy * 100).toFixed(1) : '86.4'}%
-                </span>
-                <span className="text-slate-500 text-xs font-medium">Accuracy</span>
-             </div>
-             <div className="mt-2 flex items-center gap-2">
-                <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                    <div 
-                        className={`h-full transition-all duration-1000 ${m === 'RNN' ? 'bg-rose-500' : m === 'LSTM' ? 'bg-blue-500' : 'bg-emerald-500'}`} 
-                        style={{ width: `${(metrics?.[m]?.f1_score || 0.85) * 100}%` }}
-                    ></div>
-                </div>
-                <span className="text-[10px] font-mono text-slate-400">
-                    F1: {metrics?.[m]?.f1_score?.toFixed(3) || '0.852'}
-                </span>
-             </div>
-             <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                 <svg className="w-24 h-24 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.48 0-4.5-2.02-4.5-4.5S9.52 7.5 12 7.5s4.5 2.02 4.5 4.5-2.02 4.5-4.5 4.5z"/></svg>
-             </div>
-          </div>
-        ))}
-      </div>
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 h-32 animate-pulse flex flex-col justify-between">
+              <div className="h-4 bg-slate-800 rounded w-1/3"></div>
+              <div className="h-8 bg-slate-800 rounded w-1/2"></div>
+              <div className="h-2 bg-slate-800 rounded w-full"></div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {['RNN', 'LSTM', 'BiLSTM'].map((m) => (
+            <div key={m} className={`bg-slate-900/50 border ${m === 'BiLSTM' ? 'border-indigo-500/50' : 'border-slate-800'} rounded-3xl p-6 relative overflow-hidden transition-all duration-500 hover:scale-[1.05] hover:bg-slate-900/80 group`}>
+               <div className="flex justify-between items-start mb-4">
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{m} Architecture</span>
+                  {m === 'BiLSTM' && <span className="bg-indigo-500 text-[8px] font-bold px-2 py-0.5 rounded-full text-white uppercase tracking-tighter shadow-[0_0_10px_rgba(99,102,241,0.5)]">Optimal</span>}
+               </div>
+               <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-black text-white">
+                      {metrics?.[m]?.accuracy ? (metrics[m].accuracy * 100).toFixed(1) : '—'}%
+                  </span>
+                  <span className="text-slate-500 text-xs font-medium">Accuracy</span>
+               </div>
+               <div className="mt-2 flex items-center gap-2">
+                  <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                      <div 
+                          className={`h-full transition-all duration-1000 ${m === 'RNN' ? 'bg-rose-500' : m === 'LSTM' ? 'bg-blue-500' : 'bg-emerald-500'}`} 
+                          style={{ width: `${(metrics?.[m]?.f1_score || 0) * 100}%` }}
+                      ></div>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-400">
+                      F1: {metrics?.[m]?.f1_score ? metrics[m].f1_score.toFixed(3) : '—'}
+                  </span>
+               </div>
+               <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                   <svg className="w-24 h-24 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.48 0-4.5-2.02-4.5-4.5S9.52 7.5 12 7.5s4.5 2.02 4.5 4.5-2.02 4.5-4.5 4.5z"/></svg>
+               </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {/* Comparative Analysis Plot */}
