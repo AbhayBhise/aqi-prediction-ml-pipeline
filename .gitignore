@@ -21,8 +21,6 @@ temp_hf_deploy/
 !data/processed/rf_model.joblib
 !data/processed/all_models/*.joblib
 !data/processed/forecast_models/**/*.joblib
-!data/processed/X_test_Research.joblib
-!data/processed/y_test_Research.joblib
 !data/processed/best_lstm_model.pt
 !data/processed/improved_lstm_model.pt
 !data/processed/improved_lstm_scaler.joblib
