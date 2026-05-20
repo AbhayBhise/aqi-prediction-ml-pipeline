@@ -335,6 +335,30 @@ def _load_forecast_model(horizon, model_key):
     if cache_key not in CACHE['forecast_models']:
         with model_lock:
             if cache_key not in CACHE['forecast_models']:
+                if model_key in ['lstm', 'bilstm']:
+                    model_path = os.path.join(PROJECT_ROOT, 'backend', 'models', f"{model_key}_{horizon}h.pt")
+                    scaler_path = os.path.join(PROJECT_ROOT, 'backend', 'models', f"scaler_{horizon}h.joblib")
+                    meta_path = os.path.join(PROJECT_ROOT, 'backend', 'models', f"meta_{horizon}h.json")
+                    if not all(os.path.exists(path) for path in [model_path, scaler_path, meta_path]):
+                        raise FileNotFoundError(f"Sequential forecast assets missing for {model_key} {horizon}h.")
+
+                    with open(meta_path, 'r') as f:
+                        meta = json.load(f)
+                    features = meta.get("features") or []
+                    model = AQI_BiLSTM(len(features)) if model_key == 'bilstm' else AQI_LSTM(len(features))
+                    model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+                    model.eval()
+                    CACHE['forecast_models'][cache_key] = {
+                        "type": "sequential",
+                        "model_key": model_key,
+                        "model": model,
+                        "scaler": joblib.load(scaler_path),
+                        "features": features,
+                        "classes": meta.get("classes") or list(FORECAST_CATEGORY_MAP.values()),
+                    }
+                    print(f"Loaded forecast model {cache_key}.")
+                    return CACHE['forecast_models'][cache_key]
+
                 model_name = FORECAST_MODEL_KEYS[model_key]
                 model_path = os.path.join(FORECAST_MODELS_DIR, f"{horizon}h", model_name)
                 
@@ -454,6 +478,52 @@ def _build_forecast_input(city, current_features, current_datetime, model):
         raise ValueError(f"Unable to build forecast features. Missing values: {missing[:8]}")
 
     return pd.DataFrame([{col: feature_row[col] for col in columns}]), dt
+
+
+def _build_sequential_forecast_input(city, current_features, current_datetime, model_bundle):
+    df = get_dataset()
+    city_df = df[df['City'] == city].sort_values('Datetime').copy()
+    if city_df.empty:
+        raise ValueError(f"No historical records found for city '{city}'.")
+
+    latest_row = city_df.iloc[-1].copy()
+    if current_datetime:
+        dt = pd.to_datetime(current_datetime, errors='coerce')
+        if pd.isna(dt):
+            raise ValueError("Invalid datetime. Use an ISO timestamp such as 2025-11-26T23:00:00.")
+    else:
+        dt = latest_row['Datetime']
+
+    base = latest_row.copy()
+    base['Datetime'] = dt
+    for key, value in (current_features or {}).items():
+        if key in base.index:
+            base[key] = _coerce_float(value, base[key])
+    base['City'] = city
+
+    history = city_df[city_df['Datetime'] < dt].tail(11)
+    if len(history) < 11:
+        history = city_df.tail(11)
+
+    sequence_df = pd.concat([history, pd.DataFrame([base])], ignore_index=True).tail(12).copy()
+    sequence_df['Datetime'] = pd.to_datetime(sequence_df['Datetime'], errors='coerce')
+    sequence_df['hour_sin'] = np.sin(2 * np.pi * sequence_df['Datetime'].dt.hour / 24)
+    sequence_df['hour_cos'] = np.cos(2 * np.pi * sequence_df['Datetime'].dt.hour / 24)
+    sequence_df['month_sin'] = np.sin(2 * np.pi * (sequence_df['Datetime'].dt.month - 1) / 12)
+    sequence_df['month_cos'] = np.cos(2 * np.pi * (sequence_df['Datetime'].dt.month - 1) / 12)
+
+    features = model_bundle["features"]
+    missing = [col for col in features if col not in sequence_df.columns]
+    if missing:
+        raise ValueError(f"Unable to build sequential forecast features. Missing values: {missing[:8]}")
+    feature_df = sequence_df[features].apply(pd.to_numeric, errors='coerce').ffill().bfill()
+    if feature_df.isna().any().any():
+        missing_values = feature_df.columns[feature_df.isna().any()].tolist()
+        raise ValueError(f"Unable to build sequential forecast features. Missing values: {missing_values[:8]}")
+
+    scaled = model_bundle["scaler"].transform(feature_df.astype(np.float32))
+    tensor = torch.tensor(scaled, dtype=torch.float32).unsqueeze(0)
+    return tensor, dt
 
 # ── Startup sequence ───────────────────────────────────────────────────────
 print("=" * 60)
@@ -622,19 +692,32 @@ def forecast():
             return jsonify({"error": "city is required"}), 400
 
         model = _load_forecast_model(horizon, model_key)
-        input_df, dt = _build_forecast_input(city, current_features, current_datetime, model)
-        pred_idx = int(model.predict(input_df)[0])
-        prediction = FORECAST_CATEGORY_MAP.get(pred_idx, "Unknown")
-
         probabilities = None
         confidence = None
-        if hasattr(model, "predict_proba"):
-            proba = model.predict_proba(input_df)[0]
+        if isinstance(model, dict) and model.get("type") == "sequential":
+            input_tensor, dt = _build_sequential_forecast_input(city, current_features, current_datetime, model)
+            with torch.no_grad():
+                logits = model["model"](input_tensor)
+                proba_values = torch.softmax(logits, dim=1).cpu().numpy()[0]
+            pred_idx = int(np.argmax(proba_values))
+            prediction = FORECAST_CATEGORY_MAP.get(pred_idx, "Unknown")
             probabilities = {
-                FORECAST_CATEGORY_MAP.get(int(cls), str(cls)): float(prob)
-                for cls, prob in zip(model.classes_, proba)
+                FORECAST_CATEGORY_MAP.get(idx, str(idx)): float(prob)
+                for idx, prob in enumerate(proba_values)
             }
-            confidence = float(max(probabilities.values())) if probabilities else None
+            confidence = float(proba_values[pred_idx])
+        else:
+            input_df, dt = _build_forecast_input(city, current_features, current_datetime, model)
+            pred_idx = int(model.predict(input_df)[0])
+            prediction = FORECAST_CATEGORY_MAP.get(pred_idx, "Unknown")
+
+            if hasattr(model, "predict_proba"):
+                proba = model.predict_proba(input_df)[0]
+                probabilities = {
+                    FORECAST_CATEGORY_MAP.get(int(cls), str(cls)): float(prob)
+                    for cls, prob in zip(model.classes_, proba)
+                }
+                confidence = float(max(probabilities.values())) if probabilities else None
 
         metrics = [
             r for r in _forecast_model_metrics()
