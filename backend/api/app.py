@@ -522,7 +522,7 @@ def _build_sequential_forecast_input(city, current_features, current_datetime, m
         raise ValueError(f"Unable to build sequential forecast features. Missing values: {missing_values[:8]}")
 
     scaled = model_bundle["scaler"].transform(feature_df.astype(np.float32))
-    tensor = torch.tensor(scaled, dtype=torch.float32).unsqueeze(0)
+    tensor = torch.tensor(scaled.tolist(), dtype=torch.float32).unsqueeze(0)
     return tensor, dt
 
 # ── Startup sequence ───────────────────────────────────────────────────────
