@@ -698,8 +698,9 @@ def forecast():
             input_tensor, dt = _build_sequential_forecast_input(city, current_features, current_datetime, model)
             with torch.no_grad():
                 logits = model["model"](input_tensor)
-                proba_values = torch.softmax(logits, dim=1).cpu().numpy()[0]
-            pred_idx = int(np.argmax(proba_values))
+                proba_tensor = torch.softmax(logits, dim=1).squeeze(0).cpu()
+            pred_idx = int(torch.argmax(proba_tensor).item())
+            proba_values = [float(value) for value in proba_tensor.tolist()]
             prediction = FORECAST_CATEGORY_MAP.get(pred_idx, "Unknown")
             probabilities = {
                 FORECAST_CATEGORY_MAP.get(idx, str(idx)): float(prob)
