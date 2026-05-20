@@ -316,8 +316,9 @@ def load_objects():
         # We might not need the actual dynamic trace if we don't infer. 
         # But if we did need it, we'd recreate the class here. But we are returning historical sequences!
         # The prompt instructed to just return LSTM test results mapping to precalculated sequences.
-        CACHE['lstm_test_X'] = joblib.load(os.path.join(PROCESSED_DATA_DIR, 'X_test_Research.joblib')) # Placeholder
-        CACHE['lstm_test_y'] = joblib.load(os.path.join(PROCESSED_DATA_DIR, 'y_test_Research.joblib'))
+        # CACHE['lstm_test_X'] = joblib.load(os.path.join(PROCESSED_DATA_DIR, 'X_test_Research.joblib')) # Unused placeholder
+        # CACHE['lstm_test_y'] = joblib.load(os.path.join(PROCESSED_DATA_DIR, 'y_test_Research.joblib'))
+        pass
     except Exception as e:
         print(f"Error loading LSTM: {e}")
 
