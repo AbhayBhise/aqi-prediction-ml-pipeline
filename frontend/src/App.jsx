@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -10,7 +10,9 @@ import {
   Zap,
   MessageSquare,
   Cpu,
-  Bot
+  Bot,
+  Moon,
+  Sun
 } from "lucide-react";
 import Dashboard from './pages/Dashboard';
 import EDA from './pages/EDA';
@@ -41,7 +43,7 @@ const SidebarItem = ({ to, iconKey, text, onClick }) => {
 
   if (onClick) {
     return (
-      <button onClick={onClick} className="w-full flex items-center px-4 py-3 mb-2 rounded-lg transition-colors text-slate-400 hover:bg-slate-800 hover:text-white">
+      <button onClick={onClick} className="theme-nav-item w-full flex items-center px-4 py-3 mb-2 rounded-lg transition-colors text-slate-400 hover:bg-slate-800 hover:text-white">
         <Icon size={20} className="mr-3" />
         <span className="font-medium">{text}</span>
       </button>
@@ -49,19 +51,45 @@ const SidebarItem = ({ to, iconKey, text, onClick }) => {
   }
 
   return (
-    <Link to={to} className={`flex items-center px-4 py-3 mb-2 rounded-lg transition-colors ${isActive ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
+    <Link to={to} className={`theme-nav-item flex items-center px-4 py-3 mb-2 rounded-lg transition-colors ${isActive ? 'theme-nav-active bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
       <Icon size={20} className="mr-3" />
       <span className="font-medium">{text}</span>
     </Link>
   );
 };
 
-const Sidebar = () => {
+const ThemeToggle = ({ theme, onThemeChange }) => {
   return (
-    <div className="w-64 bg-slate-900 border-r border-slate-800 h-screen overflow-y-auto shrink-0">
+    <div className="theme-toggle mt-5 p-1 rounded-xl border border-slate-800 bg-slate-950 flex">
+      <button
+        type="button"
+        onClick={() => onThemeChange('dark')}
+        className={`theme-toggle-btn ${theme === 'dark' ? 'theme-toggle-active' : ''}`}
+        aria-pressed={theme === 'dark'}
+      >
+        <Moon size={15} />
+        <span>Dark</span>
+      </button>
+      <button
+        type="button"
+        onClick={() => onThemeChange('light')}
+        className={`theme-toggle-btn ${theme === 'light' ? 'theme-toggle-active' : ''}`}
+        aria-pressed={theme === 'light'}
+      >
+        <Sun size={15} />
+        <span>Light</span>
+      </button>
+    </div>
+  );
+};
+
+const Sidebar = ({ theme, onThemeChange }) => {
+  return (
+    <div className="theme-sidebar w-64 bg-slate-900 border-r border-slate-800 h-screen overflow-y-auto shrink-0">
       <div className="p-6">
         <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">AQI ML Vision</h1>
         <p className="text-slate-500 text-sm mt-1">Analytics Dashboard</p>
+        <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
       </div>
       <div className="px-4 mt-6">
         <p className="px-4 text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Core Modules</p>
@@ -83,10 +111,10 @@ const Sidebar = () => {
   );
 };
 
-const Layout = ({ children }) => {
+const Layout = ({ children, theme, onThemeChange }) => {
   return (
-    <div className="flex bg-slate-950 h-screen overflow-hidden">
-      <Sidebar />
+    <div className={`app-shell theme-${theme} flex bg-slate-950 h-screen overflow-hidden`}>
+      <Sidebar theme={theme} onThemeChange={onThemeChange} />
       <main id="main-content" className="flex-1 overflow-y-auto p-8 relative">
         {children}
       </main>
@@ -95,9 +123,16 @@ const Layout = ({ children }) => {
 };
 
 function App() {
+  const [theme, setTheme] = useState(() => localStorage.getItem('aqi-ui-theme') || 'dark');
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('aqi-ui-theme', theme);
+  }, [theme]);
+
   return (
     <BrowserRouter>
-      <Layout>
+      <Layout theme={theme} onThemeChange={setTheme}>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/eda" element={<EDA />} />

@@ -135,15 +135,29 @@ where $T$ represents the period (24 for hours, 12 for months). This mathematical
 To understand the spatial-chemical variations of urban pollution without relying on pre-existing labels, we implement an unsupervised pattern recognition layer. Since the pollutant feature space is high-dimensional (12 continuous features), we first apply Principal Component Analysis (PCA) to extract the orthogonal axes of maximum variance, projecting the data onto the two primary components (PC1 and PC2). We then execute K-Means clustering with $k=3$ to partition the reduced latent space. This segments urban profiles into three distinct geographical regimes: Regime A (Urban Primary/Commute-heavy, dominated by $\text{NO}_2/\text{PM}_{2.5}$), Regime B (Heavy Industrial/Secondary, characterized by elevated $\text{SO}_2/\text{CO}$), and Regime C (Coastal/Low Impact, dominated by meteorological dispersion).
 
 \subsection{Deep Generative VAE Augmentation}
-To resolve the extreme minority class representation (Severe/Hazardous records $< 0.2\%$), we design a deep Variational Autoencoder (VAE) to perform high-fidelity data augmentation. Unlike standard autoencoders, a VAE models the underlying probability distribution of the data. The Encoder network compresses the input vector $x$ into a latent representation $z$ defined by a mean vector $\mu$ and standard deviation $\sigma$. To allow backpropagation through stochastic nodes, we apply the Reparameterization Trick:
+To resolve the extreme minority class representation (Severe/Hazardous records $< 0.2\%$), we design a deep Variational Autoencoder (VAE) to perform high-fidelity data augmentation. Unlike standard autoencoders, a VAE models the underlying probability distribution of the data. The Encoder network compresses the input vector $x \in \mathbb{R}^8$ (representing continuous scaled chemical and meteorological features: $\text{PM}_{2.5}$, $\text{PM}_{10}$, $\text{NO}_2$, $\text{CO}$, $\text{SO}_2$, $\text{O}_3$, Temperature, and Relative Humidity) into a latent representation $z$ defined by a mean vector $\mu$ and standard deviation $\sigma$. The encoder architecture consists of:
+\begin{enumerate}
+\item An input layer of dimension 8.
+\item A fully connected dense layer of 64 units with ReLU activation.
+\item A second dense layer of 32 units with ReLU activation.
+\item Two parallel fully connected layers projecting to the latent space of dimension $d_{\text{latent}} = 8$, representing the mean $\mu$ and log-variance $\log(\sigma^2)$ vectors.
+\end{enumerate}
+To allow backpropagation through stochastic nodes, we apply the Reparameterization Trick:
 \begin{equation}
-z = \mu + \sigma \odot \epsilon, \quad \text{where } \epsilon \sim \mathcal{N}(0, I)
+z = \mu + \exp(0.5 \cdot \log(\sigma^2)) \odot \epsilon, \quad \text{where } \epsilon \sim \mathcal{N}(0, I)
 \end{equation}
-The Decoder network then reconstructs the synthetic feature vector $\hat{x}$ from $z$. The training objective is to minimize a loss function comprising reconstruction loss (MSE) and Kullback-Leibler (KL) Divergence to regularize the latent space:
+The Decoder network reconstructs the synthetic feature vector $\hat{x}$ from the latent vector $z$. The decoder architecture mirrors the encoder:
+\begin{enumerate}
+\item A latent input layer of dimension 8.
+\item A dense layer of 32 units with ReLU activation.
+\item A dense layer of 64 units with ReLU activation.
+\item An output reconstruction layer of dimension 8 with linear activation.
+\end{enumerate}
+The training objective is to minimize a loss function comprising reconstruction loss (Mean Squared Error) and Kullback-Leibler (KL) Divergence to regularize the latent space:
 \begin{equation}
 \mathcal{L}_{\text{VAE}} = \text{MSE}(x, \hat{x}) + \beta \cdot D_{\text{KL}}(\mathcal{N}(\mu, \sigma^2) \parallel \mathcal{N}(0, I))
 \end{equation}
-We set $\beta = 0.001$ to prevent 'posterior collapse.' Post-training, we sample directly from the regularized latent space and pass the vectors through the Decoder to generate 2,746 physically consistent synthetic 'Severe' samples to balance our sequence training set.
+We set $\beta = 0.001$ to prevent 'posterior collapse.' A comprehensive grid search hyperparameter tuning was conducted across latent dimensions $d_{\text{latent}} \in \{4, 8, 16\}$ and batch sizes $B \in \{32, 64\}$, determining that $d_{\text{latent}} = 8$ and $B = 64$ yielded the optimal reconstruction convergence (minimum loss). Post-training, we sample directly from the regularized latent space and pass the vectors through the Decoder to generate 2,746 physically consistent synthetic 'Severe' samples to balance our sequence training set.
 
 \subsection{Bidirectional LSTM with Self-Attention}
 For the core temporal forecasting engine, we construct a state-of-the-art Bidirectional LSTM (BiLSTM) network in PyTorch. The input sequence represents a 24-hour historical window of 14 features. The BiLSTM layer processes the sequence chronologically and reverse-chronologically simultaneously, producing forward hidden states $h^f$ and backward hidden states $h^b$, which are concatenated into a unified temporal representation $h_t = [h^f_t; h^b_t]$. To allow the model to selectively focus on key hours (e.g. sudden morning traffic peaks or wind changes), we stack a Self-Attention layer. The attention mechanism calculates a weight $\alpha$ for each timestep based on a learnable projection matrix, producing a context vector $c$:
@@ -153,7 +167,22 @@ c = \sum_{t=1}^{T} \alpha_t h_t, \quad \text{where } \sum_{t=1}^{T} \alpha_t = 1
 This context vector is passed through fully connected layers to output the forecasted AQI category. We optimize the network using Weighted Cross-Entropy Loss to heavily penalize missing severe events.
 
 \subsection{Conversational Agentic AI Reasoning}
-To make these high-fidelity predictions useful in real-world scenarios, we build a conversational Agentic AI chatbot using a ReAct (Reasoning + Action) execution loop powered by Gemini 2.5 Flash. The agent is strictly bounded to the project domain. When a user submits a query (e.g., 'Should I go out today in Delhi?'), the agent executes a structured thought-action-observation cycle. It actively calls a Weather Retrieval Tool (fetching live OpenWeather metrics), executes our pre-trained sequential ML prediction pipeline, calculates the official CPCB band, and runs a semantic reasoning check. It then outputs a comprehensive, grounded natural language response detailing the exact pollutant values and medical precautions, establishing a factually sound cognitive layer.
+To bridge the gap between complex machine learning outputs and actionable public safety decision-support, we implement a domain-bounded conversational Agentic AI system. The interface is built using a ReAct (Reasoning + Action) execution loop powered by Gemini 2.5 Flash, acting as a natural language cognitive layer.
+
+The ReAct framework coordinates reasoning steps with specific tools to perform factual grounding and live data retrieval. When a user submits an atmospheric query (e.g., 'Should I go out today in Bengaluru?'), the agent executes a cyclic loop composed of:
+\begin{enumerate}
+\item \textbf{Thought}: Analytically parses the user prompt, determines the target geographical location, and identifies which analytical assets or live tools must be invoked.
+\item \textbf{Action}: Invokes one or more available system tools:
+\begin{itemize}
+\item \textbf{Weather Retrieval Tool}: Queries live OpenWeather API endpoints to fetch current temperature, relative humidity, wind speed, and wind direction.
+\item \textbf{Predictive Sequential ML Tool}: Executes the pre-trained BiLSTM with Self-Attention sequential model on the target features to produce a look-ahead classification.
+\item \textbf{CPCB Determiner Tool}: Computes the statutory Air Quality Index sub-index and class bands according to Indian Central Pollution Control Board equations.
+\end{itemize}
+\item \textbf{Observation}: Inspects the returned metrics and forecast bands (e.g. Current PM2.5 $= 45\mu\text{g/m}^3$, Forecast Class $=$ Moderate).
+\item \textbf{Response}: Synthesizes a formal, grounded, natural language response detailing the precise pollutant metrics, the model's confidence, and medical precautions (e.g. recommendations for respiratory-sensitive groups).
+\end{enumerate}
+
+To guarantee security, safety, and strict alignment, the agent is embedded with system prompt guards that restrict reasoning exclusively to the project's data domain. Queries unrelated to air quality, dataset structures, or model architectures are systematically caught and handled by returning a pre-defined boundary response, mitigating hallucination and off-topic prompt drift.
 
 \section{Experimentation and Discussion}
 The experimental evaluation is conducted on a high-density, multi-city air quality dataset spanning multiple Indian meteorological zones. The total volume of cleaned data comprises 842,160 hourly records. Feature columns include raw chemical sensor metrics ($\text{PM}_{2.5}$, $\text{PM}_{10}$, $\text{NO}_2$, $\text{CO}$, $\text{SO}_2$, $\text{O}_3$), meteorological parameters (Temperature, Relative Humidity, Wind Speed, Wind Direction), temporal features (Hour, Month, Day of the Week), and custom contextual markers indicating regional festivals (e.g. Diwali) and stubble-burning seasons. Training is executed on a GPU-accelerated computing node using CUDA 12.1. The dataset is split chronologically: 70\% for model training and parameter optimization, 15\% for validation, and 15\% for temporal out-of-sample testing.
