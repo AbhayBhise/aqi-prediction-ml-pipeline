@@ -126,7 +126,14 @@ function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('aqi-ui-theme') || 'dark');
 
   useEffect(() => {
+    // Set data-theme attribute for CSS variable switching
     document.documentElement.dataset.theme = theme;
+    // Set .theme-light class for Tailwind override rules in index.css
+    if (theme === 'light') {
+      document.documentElement.classList.add('theme-light');
+    } else {
+      document.documentElement.classList.remove('theme-light');
+    }
     localStorage.setItem('aqi-ui-theme', theme);
   }, [theme]);
 
