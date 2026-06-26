@@ -12,7 +12,8 @@ import {
   Cpu,
   Bot,
   Moon,
-  Sun
+  Sun,
+  Coffee
 } from "lucide-react";
 import Dashboard from './pages/Dashboard';
 import EDA from './pages/EDA';
@@ -23,6 +24,7 @@ import FinalInsights from './pages/FinalInsights';
 import Prediction from "./pages/Prediction";
 import GenerativeAI from './pages/GenerativeAI';
 import AgenticAI from './pages/AgenticAI';
+import BuyMeACoffeeModal from './components/BuyMeACoffeeModal';
 
 const icons = {
   dashboard: LayoutDashboard,
@@ -106,6 +108,19 @@ const Sidebar = ({ theme, onThemeChange }) => {
           <SidebarItem to="/generative" iconKey="generative" text="Generative AI (VAE)" />
           <SidebarItem to="/agent" iconKey="agent" text="Agentic AI" />
         </div>
+
+        <div className="pt-4 mt-4 border-t border-slate-800">
+          <p className="px-4 text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Support</p>
+          <a 
+            href="https://buymeacoffee.com/bhiseabhayq" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="theme-nav-item flex items-center px-4 py-3 mb-2 rounded-lg transition-colors text-[#FFDD00] bg-[#FFDD00]/5 hover:bg-[#FFDD00]/15 border border-[#FFDD00]/20"
+          >
+            <Coffee size={20} className="mr-3" />
+            <span className="font-medium">Buy me a coffee</span>
+          </a>
+        </div>
       </div>
     </div>
   );
@@ -118,6 +133,7 @@ const Layout = ({ children, theme, onThemeChange }) => {
       <main id="main-content" className="flex-1 overflow-y-auto p-8 relative">
         {children}
       </main>
+      <BuyMeACoffeeModal />
     </div>
   );
 };
