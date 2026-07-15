@@ -27,7 +27,7 @@ The backend is a Flask API serving trained models, deployed as a Docker containe
 | Service | Stack | Status |
 |---|---|---|
 | **Backend API** | Flask + Gunicorn, Dockerized, hosted on Hugging Face Spaces | 🟢 [Live](https://cbabhi-aqi-prediction-ml-pipeline.hf.space) |
-| **Frontend Dashboard** | React 19 + Vite + Tailwind, deployed on Vercel | Add your live URL |
+| **Frontend Dashboard** | React 19 + Vite + Tailwind, deployed on Vercel | (https://frontend-sigma-six-81.vercel.app/) |
 
 ---
 
