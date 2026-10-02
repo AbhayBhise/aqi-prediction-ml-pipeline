@@ -326,7 +326,7 @@ try:
     axes[0].hist(real_pm25, bins=50, alpha=0.7, color='#6366F1', label='Real PM2.5', density=True)
     axes[0].hist(generated_data_unscaled[:, 0], bins=50, alpha=0.7, color='#22D3EE', label='Synthetic PM2.5', density=True)
     axes[0].set_title('Real vs. Synthetic PM2.5 Distribution', color='white', fontsize=12, fontweight='bold')
-    axes[0].set_xlabel('PM2.5 (Î¼g/mÂ³)', color='#94A3B8')
+    axes[0].set_xlabel('PM2.5 (μg/m³)', color='#94A3B8')
     axes[0].set_ylabel('Density', color='#94A3B8')
     axes[0].tick_params(colors='#94A3B8')
     axes[0].spines[:].set_color('#334155')

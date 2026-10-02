@@ -60,7 +60,7 @@ class AQIAgenticBot:
                 "Unit VI": "Generative AI: Utilized Variational Autoencoders (VAE) and GANs for synthetic data generation, specifically augmenting minority 'Severe' classes to improve recall."
             },
             "dataset_info": {
-                "total_rows": 842160,
+                "total_rows": 839644,
                 "granularity": "Hourly",
                 "features": ["PM2.5", "PM10", "NO2", "CO", "SO2", "O3", "Temp", "Humidity", "Wind", "Festivals", "Crop Burning"],
                 "preprocessing": "Linear Interpolation for gaps, Median Imputation for city-wide missingness, Cyclical encoding (Sine/Cosine) for temporal features.",
@@ -212,7 +212,7 @@ class AQIAgenticBot:
             if "model" in q or "accuracy" in q or "best" in q:
                 resp = "Based on our project metrics, the Bi-Directional LSTM with Attention is our top sequential model, achieving 88.08% sequence classification accuracy and 23.50% Hazardous recall. For 1-hour ahead regression forecasting, XGBoost achieves 99.31% accuracy, while for 24-hour ahead forecasting, the top performer is XGBoost at 78.73% followed by BiLSTM at 74.13%."
             elif "row" in q or "size" in q or "dataset" in q:
-                resp = "Our dataset contains exactly 842,160 rows of hourly, multi-city AQI data."
+                resp = "Our dataset contains exactly 839,644 rows of hourly, multi-city AQI data."
             elif "city" in q or "cities" in q:
                 cities = self.project_context['dataset_info'].get('available_cities', [])
                 resp = f"We analyze data for {len(cities)} specific cities. Our internal knowledge base covers locations across India."

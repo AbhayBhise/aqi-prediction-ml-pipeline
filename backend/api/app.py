@@ -8,7 +8,6 @@ import cachetools
 import psutil
 from tenacity import retry, stop_after_attempt, wait_exponential
 from dotenv import load_dotenv
-from backend.api.agentic_chatbot import AQIAgenticBot
 
 # Load environment variables (from parent backend folder)
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
@@ -36,25 +35,55 @@ from flask_talisman import Talisman
 import joblib
 import pandas as pd
 import numpy as np
-import torch
-import torch.nn as nn
 import json
 import hashlib
 import time
 import glob
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import seaborn as sns
 from utils.cpcb_calculator import calculate_cpcb_aqi
-import scipy.cluster.hierarchy as sch
 
-# ── Global visual style (fixed once, applied everywhere) ───────────────────
-sns.set_style("darkgrid")
-plt.rcParams["figure.figsize"] = (10, 6)
-plt.rcParams["axes.spines.top"]    = False
-plt.rcParams["axes.spines.right"]  = False
 np.random.seed(42)
+
+# ── Lazy import helpers ────────────────────────────────────────────────────
+# torch, matplotlib, seaborn and scipy are heavy (10-70x the cost of pandas).
+# They are only required by forecast/plot/dendrogram routes, so they are
+# loaded on first use instead of at import time. This cuts the HF Space cold
+# start from ~45s to a few seconds for the dashboard/EDA/predict APIs.
+_TORCH = None
+
+def _get_torch():
+    """Load PyTorch on demand (used only by LSTM/BiLSTM forecast routes)."""
+    global _TORCH
+    if _TORCH is None:
+        import torch
+        _TORCH = torch
+    return _TORCH
+
+_PLOT_LIBS = None
+
+def _get_plot_libs():
+    """Load matplotlib + seaborn on demand (used only by EDA plot generation)."""
+    global _PLOT_LIBS
+    if _PLOT_LIBS is None:
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+        sns.set_style("darkgrid")
+        plt.rcParams["figure.figsize"] = (10, 6)
+        plt.rcParams["axes.spines.top"]    = False
+        plt.rcParams["axes.spines.right"]  = False
+        _PLOT_LIBS = (plt, sns)
+    return _PLOT_LIBS
+
+_SCH = None
+
+def _get_sch():
+    """Load scipy.cluster.hierarchy on demand (used only by the dendrogram route)."""
+    global _SCH
+    if _SCH is None:
+        import scipy.cluster.hierarchy as sch
+        _SCH = sch
+    return _SCH
 
 def print_memory_usage(stage=""):
     process = psutil.Process(os.getpid())
@@ -208,36 +237,45 @@ os.makedirs(DYN_CACHE_DIR, exist_ok=True)
 
 FORECAST_HORIZONS = [1, 4, 6, 12, 24]
 # ── Sequential Model Architectures (PyTorch) ──────────────────
-class Attention(nn.Module):
-    def __init__(self, hidden_dim):
-        super(Attention, self).__init__()
-        self.attn = nn.Linear(hidden_dim, 1)
-    def forward(self, x):
-        attn_weights = torch.softmax(self.attn(x), dim=1)
-        context = torch.sum(attn_weights * x, dim=1)
-        return context, attn_weights
+# Defined inside a lazy factory so torch (a ~10s cold import) is only
+# pulled in when an LSTM/BiLSTM forecast request actually arrives.
+def _get_nn_architectures():
+    """Import torch on demand and return (Attention, AQI_LSTM, AQI_BiLSTM)."""
+    torch = _get_torch()
+    import torch.nn as nn
 
-class AQI_LSTM(nn.Module):
-    def __init__(self, input_dim=14, hidden_dim=128, num_layers=2, num_classes=6):
-        super(AQI_LSTM, self).__init__()
-        self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True, dropout=0.3)
-        self.attention = Attention(hidden_dim)
-        self.fc = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Dropout(0.3), nn.Linear(64, num_classes))
-    def forward(self, x):
-        out, _ = self.lstm(x)
-        context, _ = self.attention(out)
-        return self.fc(context)
+    class Attention(nn.Module):
+        def __init__(self, hidden_dim):
+            super(Attention, self).__init__()
+            self.attn = nn.Linear(hidden_dim, 1)
+        def forward(self, x):
+            attn_weights = torch.softmax(self.attn(x), dim=1)
+            context = torch.sum(attn_weights * x, dim=1)
+            return context, attn_weights
 
-class AQI_BiLSTM(nn.Module):
-    def __init__(self, input_dim=14, hidden_dim=128, num_layers=2, num_classes=6):
-        super(AQI_BiLSTM, self).__init__()
-        self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True, dropout=0.3, bidirectional=True)
-        self.attention = Attention(hidden_dim * 2)
-        self.fc = nn.Sequential(nn.Linear(hidden_dim * 2, 128), nn.ReLU(), nn.Dropout(0.4), nn.Linear(128, num_classes))
-    def forward(self, x):
-        out, _ = self.lstm(x)
-        context, _ = self.attention(out)
-        return self.fc(context)
+    class AQI_LSTM(nn.Module):
+        def __init__(self, input_dim=14, hidden_dim=128, num_layers=2, num_classes=6):
+            super(AQI_LSTM, self).__init__()
+            self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True, dropout=0.3)
+            self.attention = Attention(hidden_dim)
+            self.fc = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Dropout(0.3), nn.Linear(64, num_classes))
+        def forward(self, x):
+            out, _ = self.lstm(x)
+            context, _ = self.attention(out)
+            return self.fc(context)
+
+    class AQI_BiLSTM(nn.Module):
+        def __init__(self, input_dim=14, hidden_dim=128, num_layers=2, num_classes=6):
+            super(AQI_BiLSTM, self).__init__()
+            self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True, dropout=0.3, bidirectional=True)
+            self.attention = Attention(hidden_dim * 2)
+            self.fc = nn.Sequential(nn.Linear(hidden_dim * 2, 128), nn.ReLU(), nn.Dropout(0.4), nn.Linear(128, num_classes))
+        def forward(self, x):
+            out, _ = self.lstm(x)
+            context, _ = self.attention(out)
+            return self.fc(context)
+
+    return Attention, AQI_LSTM, AQI_BiLSTM
 
 FORECAST_MODEL_KEYS = {
     "logistic_regression": "logistic_regression.joblib",
@@ -289,6 +327,56 @@ def get_dataset_eda() -> pd.DataFrame:
 
 model_lock = threading.Lock()
 
+# ─────────────────────────────────────────────────────────────────────
+# Dataset / model metadata for the dashboard cards
+# ─────────────────────────────────────────────────────────────────────
+_meta_lock = threading.Lock()
+_META_CACHE = {}
+
+
+def get_dataset_meta() -> dict:
+    """Feature and model counts, read from the artifacts the app actually uses.
+
+    Sourced from the fitted scaler and the trained model files rather than
+    hardcoded in the client, so the dashboard cards can never drift from the
+    real pipeline. Cheap: the scaler is ~1KB and the model list is a directory
+    scan. Cached after the first call.
+    """
+    if _META_CACHE:
+        return _META_CACHE
+
+    with _meta_lock:
+        if _META_CACHE:
+            return _META_CACHE
+
+        feature_count = None
+        try:
+            scaler = CACHE.get('scaler_ui')
+            if scaler is None:
+                scaler = joblib.load(
+                    os.path.join(PROCESSED_DATA_DIR, 'scaler_UI.joblib')
+                )
+            feature_count = int(getattr(scaler, 'n_features_in_', 0)) or None
+        except Exception as e:
+            print(f"[META] feature count unavailable: {e}")
+
+        model_count = None
+        try:
+            models_dir = os.path.join(PROCESSED_DATA_DIR, 'all_models')
+            if os.path.isdir(models_dir):
+                model_count = sum(
+                    1 for f in os.listdir(models_dir) if f.endswith('.joblib')
+                ) or None
+        except Exception as e:
+            print(f"[META] model count unavailable: {e}")
+
+        _META_CACHE.update({
+            'feature_count': feature_count,
+            'model_count': model_count,
+        })
+        return _META_CACHE
+
+
 def load_objects():
     if 'models' in CACHE: return
     
@@ -312,23 +400,25 @@ def load_objects():
                 "ann",
                 "dnn",
             ]
-            CACHE['models'] = {}
+            # Build the ensemble in a local dict and publish it only once it is
+            # complete. Assigning CACHE['models'] up front would let a concurrent
+            # request pass the `if 'models' in CACHE` guard above and use a
+            # partially-loaded ensemble.
+            models = {}
             for mn in model_names:
                 path = os.path.join(MODELS_PATH, f"{mn}.joblib")
                 if os.path.exists(path):
-                    CACHE['models'][mn] = joblib.load(path)
+                    models[mn] = joblib.load(path)
                     print(f"Loaded {mn} model.")
                 else:
                     print(f"Warning: Model {mn} not found at {path}")
+            CACHE['models'] = models
         except Exception as e:
             print(f"Error loading models/scalers: {e}")
 
     try:
         # Load improved LSTM model
         model_path = os.path.join(PROCESSED_DATA_DIR, 'improved_lstm_model.pt')
-        
-        # Determine device strictly matching training context
-        device = torch.device('cpu') 
         
         sys.path.append(PROJECT_ROOT) # to allow torch to resolve the model class if needed
         # We might not need the actual dynamic trace if we don't infer. 
@@ -370,6 +460,8 @@ def _load_forecast_model(horizon, model_key):
                         raise RuntimeError(f"Sequential forecast metadata loading failed: {exc}") from exc
 
                     try:
+                        _, AQI_LSTM, AQI_BiLSTM = _get_nn_architectures()
+                        torch = _get_torch()
                         model = AQI_BiLSTM(len(features)) if model_key == 'bilstm' else AQI_LSTM(len(features))
                         model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
                         model.eval()
@@ -415,6 +507,8 @@ def _load_forecast_model(horizon, model_key):
 
                 if cache_key not in CACHE['forecast_models']:
                     if model_path.endswith('.pt'):
+                        _, AQI_LSTM, AQI_BiLSTM = _get_nn_architectures()
+                        torch = _get_torch()
                         input_dim = 14 # Fixed for our new sequential models
                         model = AQI_BiLSTM(input_dim) if model_key == 'bilstm' else AQI_LSTM(input_dim)
                         model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
@@ -555,6 +649,7 @@ def _build_sequential_forecast_input(city, current_features, current_datetime, m
         raise ValueError(f"Unable to build sequential forecast features. Missing values: {missing_values[:8]}")
 
     scaled = model_bundle["scaler"].transform(feature_df.astype(np.float32))
+    torch = _get_torch()
     tensor = torch.tensor(scaled.tolist(), dtype=torch.float32).unsqueeze(0)
     return tensor, dt
 
@@ -568,13 +663,17 @@ if "pytest" not in sys.modules:
     print_memory_usage("Pre-Startup")
 
     print("[STARTUP] Loading dataset...")
-    _load_dataset_startup()  # dataset first (pure I/O, no GPU needed)
+    _load_dataset_startup()  # dataset first (needed by /ready, dashboard, EDA)
     print_memory_usage("Post-Dataset Load")
 
-    print("[STARTUP] Eagerly preloading ML classification model ensemble...")
-    load_objects()  # Eagerly preload classification model ensemble
-    print_memory_usage("Post-Model Warmup")
-    print("[STARTUP] Flask application startup warmup complete. Ready to serve.")
+    # Model ensemble is heavy (~21s: sklearn warm-up + 9 .joblib files).
+    # Preload it in the background so the API can serve traffic immediately;
+    # /predict already calls load_objects() lazily with double-checked locking,
+    # so a prediction that arrives before warm-up finishes just blocks briefly.
+    print("[STARTUP] Preloading ML model ensemble in background thread...")
+    warmup_thread = threading.Thread(target=load_objects, daemon=True, name="model-warmup")
+    warmup_thread.start()
+    print("[STARTUP] Flask application is ready to serve (model warm-up in background).")
     print("=" * 60)
 
 # ── Global Error Handling ──────────────────────────────────────────────────
@@ -732,6 +831,7 @@ def forecast():
             except Exception as exc:
                 raise RuntimeError(f"Sequential forecast input preparation failed: {exc}") from exc
             try:
+                torch = _get_torch()
                 with torch.no_grad():
                     logits = model["model"](input_tensor)
                     proba_tensor = torch.softmax(logits, dim=1).squeeze(0).cpu()
@@ -966,6 +1066,7 @@ def _evict_oldest_dynamic(max_files: int = _DYN_MAX_FILES):
                 pass
 
 def _make_hist(df, key, label, hist_path):
+    plt, _ = _get_plot_libs()
     hist_file = f"dyn_{key}_histograms.png"
     if os.path.exists(hist_path):
         print(f"[EDA cache] Using cached: {hist_file}")
@@ -986,6 +1087,7 @@ def _make_hist(df, key, label, hist_path):
 
 
 def _make_boxplot(df, key, label, box_path):
+    plt, sns = _get_plot_libs()
     box_file = f"dyn_{key}_boxplots.png"
     if os.path.exists(box_path):
         print(f"[EDA cache] Using cached: {box_file}")
@@ -1005,6 +1107,7 @@ def _make_boxplot(df, key, label, box_path):
     plt.close()
 
 def _make_trends(df, key, city, month, trend_path):
+    plt, _ = _get_plot_libs()
     trend_file = f"dyn_{key}_trends.png"
     if os.path.exists(trend_path):
         print(f"[EDA cache] Using cached: {trend_file}")
@@ -1164,7 +1267,8 @@ def eda_data():
                 "monthwise_summary": monthwise_summary,
                 "raw_time_series": raw_time_series,
                 "raw_time_series_metrics": [m for m in TIME_SERIES_METRICS if m != 'AQI_Score' or 'AQI_Category' in df_f.columns],
-                "row_count": int(len(df_f))
+                "row_count": int(len(df_f)),
+                **get_dataset_meta(),
             })
         except Exception as e:
             import traceback; traceback.print_exc()
@@ -1181,7 +1285,8 @@ def eda_data():
             "monthwise_summary": _build_monthwise_summary(df_all),
             "raw_time_series": _build_raw_timeseries(df_all),
             "raw_time_series_metrics": [m for m in TIME_SERIES_METRICS if m != 'AQI_Score' or 'AQI_Category' in df_all.columns],
-            "row_count": int(len(df_all))
+            "row_count": int(len(df_all)),
+            **get_dataset_meta(),
         })
 
 @app.route('/health', methods=['GET'])
@@ -1365,6 +1470,8 @@ def clustering_data():
 def generate_dendrogram():
     """Generates a hierarchical clustering dendrogram on the fly."""
     try:
+        plt, _ = _get_plot_libs()
+        sch = _get_sch()
         df_eda = get_dataset_eda()
         pollutants = ['PM2_5_ugm3', 'PM10_ugm3', 'NO2_ugm3', 'CO_ugm3', 'SO2_ugm3', 'O3_ugm3']
         data_sample = df_eda[pollutants].dropna().sample(min(200, len(df_eda)), random_state=42)
@@ -1511,6 +1618,10 @@ def chatbot():
             except Exception as e:
                 print(f"[Bot Tool Error]: {e}")
                 return {"city": "Unknown", "aqi": 120, "category": "Moderate", "ml_predicted_category": "Unknown", "is_live": False, "error": str(e)}
+
+        # Imported here (not at module scope) so the google-genai SDK is only
+        # loaded when the chatbot is actually used, keeping startup fast.
+        from backend.api.agentic_chatbot import AQIAgenticBot
 
         bot = AQIAgenticBot(get_current_status)
         # Inform the bot about the unique cities in our dataset
