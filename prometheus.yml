@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'aqi_backend'
+    static_configs:
+      - targets: ['backend:7860']
+        # This assumes your Flask app will expose a /metrics endpoint using prometheus_client

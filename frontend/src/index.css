@@ -164,13 +164,13 @@ body {
 }
 
 .theme-light .text-slate-400 {
-  color: #334155 !important;
+  color: var(--text-muted) !important;
 }
 
 .theme-light .text-slate-500,
 .theme-light .text-slate-600,
 .theme-light .text-slate-700 {
-  color: #475569 !important;
+  color: var(--text-faint) !important;
 }
 
 .theme-light .hover\:bg-slate-800:hover,
@@ -245,4 +245,3 @@ body {
 .theme-light [class*="bg-yellow-500"] .text-white {
   color: #111827 !important;
 }
-
