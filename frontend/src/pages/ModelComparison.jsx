@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import api from '../services/api';
 import ImageModal from '../components/ImageModal';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const IMG_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/images`;
 
@@ -106,14 +107,11 @@ const ModelComparison = () => {
       </div>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center h-96 opacity-50">
-           <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin mb-4"></div>
-           <p className="text-slate-400 font-mono text-xs uppercase tracking-[0.2em]">Aggregating Architecture Telemetry...</p>
-        </div>
+        <LoadingOverlay text="Aggregating Architecture Telemetry..." />
       ) : (
         <>
           {/* Main Chart Card */}
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 mb-10 shadow-2xl relative overflow-hidden">
+          <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-8 mb-10 shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 p-10 opacity-[0.03] pointer-events-none">
                 <svg className="w-64 h-64 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-4h2v4zm4 0h-2v-6h2v6zm-8 0H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V7h2v2z"/></svg>
             </div>
@@ -181,7 +179,7 @@ const ModelComparison = () => {
           </div>
 
           {/* Model Ranking Table */}
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl mb-12">
+          <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl overflow-hidden shadow-2xl mb-12">
             <div className="p-6 border-b border-slate-800 bg-slate-950/40 flex justify-between items-center">
               <h3 className="font-bold text-white text-lg">Statistical Performance Matrix</h3>
               <span className="text-[10px] bg-slate-800 text-slate-400 px-3 py-1 rounded-full font-bold uppercase tracking-wider">Research-Grade Validation</span>
@@ -240,7 +238,7 @@ const ModelComparison = () => {
                         <div 
                             key={mKey} 
                             onClick={() => openImageDetail(imgUrl, mKey.replace(/_/g, ' ').toUpperCase(), row.Model)}
-                            className="bg-slate-900 border border-slate-800 rounded-2xl p-4 hover:ring-2 hover:ring-indigo-500/30 transition-all group shadow-xl cursor-zoom-in"
+                            className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-2xl p-4 hover:ring-2 hover:ring-indigo-500/30 transition-all group shadow-xl cursor-zoom-in"
                         >
                             <div className="flex justify-between items-center mb-4">
                                 <span className="text-xs font-black text-slate-300 group-hover:text-white transition-colors">{mKey.replace(/_/g, ' ').toUpperCase()}</span>
@@ -284,7 +282,7 @@ const ModelComparison = () => {
 
             <div className="grid grid-cols-1 xl:grid-cols-5 gap-4 mb-8">
               {bestForecastByHorizon.map((row) => (
-                <div key={row.horizon_hours} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <div key={row.horizon_hours} className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-2xl p-5 shadow-xl">
                   <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-2">{row.horizon_hours}h Best Accuracy</p>
                   <p className="text-sm text-white font-black truncate">{row.model}</p>
                   <p className="text-2xl text-indigo-400 font-black mt-3">{(row.accuracy * 100).toFixed(2)}%</p>
@@ -293,7 +291,7 @@ const ModelComparison = () => {
               ))}
             </div>
 
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 mb-8 shadow-2xl">
+            <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-8 mb-8 shadow-2xl">
               <div className="flex justify-between items-center mb-8">
                 <h3 className="text-xl font-bold text-white">Forecast Accuracy by Horizon</h3>
                 <span className="text-[10px] bg-slate-800 text-slate-400 px-3 py-1 rounded-full font-bold uppercase tracking-wider">Chronological Test Split</span>
@@ -311,7 +309,7 @@ const ModelComparison = () => {
               </div>
             </div>
 
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+            <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
               <div className="p-6 border-b border-slate-800 bg-slate-950/40 flex justify-between items-center">
                 <h3 className="font-bold text-white text-lg">Forecast Performance Matrix</h3>
                 <span className="text-[10px] bg-slate-800 text-slate-400 px-3 py-1 rounded-full font-bold uppercase tracking-wider">1h / 4h / 6h / 12h / 24h</span>
@@ -384,3 +382,4 @@ const ModelComparison = () => {
 };
 
 export default ModelComparison;
+

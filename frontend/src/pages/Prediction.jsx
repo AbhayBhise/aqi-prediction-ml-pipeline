@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import api from '../services/api';
 
 const featureList = [
@@ -142,14 +142,14 @@ const Prediction = () => {
           <h1 className="text-3xl font-bold text-white tracking-tight">Future AQI Forecast</h1>
           <p className="text-slate-400 mt-2">Predict AQI category 1h, 4h, 6h, 12h, or 24h ahead using saved forecast models.</p>
         </div>
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 text-right">
+        <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-2xl px-5 py-3 text-right">
           <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Active Mode</p>
           <p className="text-sm text-indigo-300 font-bold">Chronological Forecast</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-10 items-start">
-        <div className="xl:col-span-4 bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl sticky top-8">
+        <div className="xl:col-span-4 bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-8 shadow-2xl sticky top-8">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-2 h-6 bg-indigo-500 rounded-full"></div>
             <h3 className="text-lg font-bold text-white uppercase tracking-tight">Forecast Controls</h3>
@@ -259,7 +259,7 @@ const Prediction = () => {
         <div className="xl:col-span-8 space-y-8">
           {result ? (
             <>
-              <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-10 relative overflow-hidden shadow-2xl">
+              <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-[2.5rem] p-10 relative overflow-hidden shadow-2xl">
                 <div className="relative z-10">
                   <div className="flex flex-wrap items-center gap-4 mb-8">
                     <span className="bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-[0.2em]">
@@ -302,7 +302,7 @@ const Prediction = () => {
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-xl">
+                <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-8 shadow-xl">
                   <h4 className="text-sm font-black text-white uppercase tracking-widest mb-6">Validation Profile</h4>
                   <div className="space-y-4">
                     {[
@@ -319,7 +319,7 @@ const Prediction = () => {
                   </div>
                 </div>
 
-                <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-xl">
+                <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-8 shadow-xl">
                   <h4 className="text-sm font-black text-white uppercase tracking-widest mb-6">Class Probabilities</h4>
                   <div className="space-y-3">
                     {Object.entries(result.probabilities || {}).map(([label, value]) => (
@@ -353,3 +353,4 @@ const Prediction = () => {
 };
 
 export default Prediction;
+

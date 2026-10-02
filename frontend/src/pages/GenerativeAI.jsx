@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import ImageModal from '../components/ImageModal';
 import { Cpu, Layers, Zap, TrendingDown, Shuffle, ChevronRight, Award, Database } from 'lucide-react';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const IMG_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/images`;
 
@@ -64,14 +65,7 @@ const GenerativeAI = () => {
     }
   });
 
-  if (loading) return (
-    <div className="flex items-center justify-center h-64">
-      <div className="text-center space-y-4">
-        <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-slate-400 text-sm">Loading VAE artifacts...</p>
-      </div>
-    </div>
-  );
+  if (loading) return <LoadingOverlay message="Loading VAE artifacts..." />;
 
   if (error) return (
     <div className="flex flex-col items-center justify-center h-64 gap-4">
@@ -96,7 +90,7 @@ const GenerativeAI = () => {
             <div className="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center border border-indigo-500/20">
               <Cpu size={20} className="text-indigo-400" />
             </div>
-            <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-full">Unit IV — Deep Generative Models</span>
+            <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-full">Unit IV â€” Deep Generative Models</span>
           </div>
           <h1 className="text-3xl font-bold text-white tracking-tight">Variational Autoencoder</h1>
           <p className="text-slate-400 mt-1">Generative model trained on 8 AQI environmental features. Hyperparameter tuning across 6 configurations.</p>
@@ -119,29 +113,29 @@ const GenerativeAI = () => {
 
       {/* Architecture */}
       <div className="mb-12">
-        <SectionDivider title="VAE Architecture" badge="Encoder → Latent Space → Decoder" />
+        <SectionDivider title="VAE Architecture" badge="Encoder â†’ Latent Space â†’ Decoder" />
         <div className="grid grid-cols-3 gap-4 mb-6">
           {/* Encoder */}
-          <div className="bg-slate-900 border border-indigo-500/30 rounded-2xl p-6 shadow-lg shadow-indigo-500/5">
+          <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-indigo-500/30 rounded-2xl p-6 shadow-lg shadow-indigo-500/5">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center"><Layers size={16} className="text-indigo-400"/></div>
               <span className="text-sm font-black text-indigo-400 uppercase tracking-wider">Encoder</span>
             </div>
             <div className="space-y-2 font-mono text-xs">
-              {['Input (8 features)', 'Dense(64, ReLU)', 'Dense(32, ReLU)', '↓', 'z_mean (8)', 'z_log_var (8)'].map((l, i) => (
-                <div key={i} className={`px-3 py-1.5 rounded-lg ${l === '↓' ? 'text-center text-indigo-400' : 'bg-slate-800 text-slate-300 border border-slate-700'}`}>{l}</div>
+              {['Input (8 features)', 'Dense(64, ReLU)', 'Dense(32, ReLU)', 'â†“', 'z_mean (8)', 'z_log_var (8)'].map((l, i) => (
+                <div key={i} className={`px-3 py-1.5 rounded-lg ${l === 'â†“' ? 'text-center text-indigo-400' : 'bg-slate-800 text-slate-300 border border-slate-700'}`}>{l}</div>
               ))}
             </div>
           </div>
 
           {/* Latent Space */}
-          <div className="bg-slate-900 border border-cyan-500/30 rounded-2xl p-6 shadow-lg shadow-cyan-500/5">
+          <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-cyan-500/30 rounded-2xl p-6 shadow-lg shadow-cyan-500/5">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center"><Shuffle size={16} className="text-cyan-400"/></div>
               <span className="text-sm font-black text-cyan-400 uppercase tracking-wider">Latent Space</span>
             </div>
             <div className="space-y-2 font-mono text-xs">
-              {['z ~ N(μ, σ²)', 'Reparameterization', 'z = μ + σ·ε', 'ε ~ N(0,1)', `dim = ${trainingData?.latent_dim || 8}`].map((l, i) => (
+              {['z ~ N(Î¼, ÏƒÂ²)', 'Reparameterization', 'z = Î¼ + ÏƒÂ·Îµ', 'Îµ ~ N(0,1)', `dim = ${trainingData?.latent_dim || 8}`].map((l, i) => (
                 <div key={i} className="px-3 py-1.5 rounded-lg bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 text-center">{l}</div>
               ))}
               <div className="text-[9px] text-slate-500 text-center pt-2">KL Divergence regularizes</div>
@@ -149,14 +143,14 @@ const GenerativeAI = () => {
           </div>
 
           {/* Decoder */}
-          <div className="bg-slate-900 border border-emerald-500/30 rounded-2xl p-6 shadow-lg shadow-emerald-500/5">
+          <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-emerald-500/30 rounded-2xl p-6 shadow-lg shadow-emerald-500/5">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center"><Zap size={16} className="text-emerald-400"/></div>
               <span className="text-sm font-black text-emerald-400 uppercase tracking-wider">Decoder</span>
             </div>
             <div className="space-y-2 font-mono text-xs">
-              {['z (8 latent)', 'Dense(32, ReLU)', 'Dense(64, ReLU)', '↓', 'Output (8 features)', '→ Synthetic AQI Data'].map((l, i) => (
-                <div key={i} className={`px-3 py-1.5 rounded-lg ${l === '↓' ? 'text-center text-emerald-400' : 'bg-slate-800 text-slate-300 border border-slate-700'}`}>{l}</div>
+              {['z (8 latent)', 'Dense(32, ReLU)', 'Dense(64, ReLU)', 'â†“', 'Output (8 features)', 'â†’ Synthetic AQI Data'].map((l, i) => (
+                <div key={i} className={`px-3 py-1.5 rounded-lg ${l === 'â†“' ? 'text-center text-emerald-400' : 'bg-slate-800 text-slate-300 border border-slate-700'}`}>{l}</div>
               ))}
             </div>
           </div>
@@ -177,12 +171,12 @@ const GenerativeAI = () => {
       <div className="mb-12">
         <SectionDivider title="Training Loss Curves" badge="30 Epochs" />
         <div
-          className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden cursor-zoom-in hover:ring-2 hover:ring-indigo-500/30 transition-all group"
-          onClick={() => openModal('vae_loss_curve.png', 'VAE Training Loss — Reconstruction + KL Divergence')}
+          className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-2xl overflow-hidden cursor-zoom-in hover:ring-2 hover:ring-indigo-500/30 transition-all group"
+          onClick={() => openModal('vae_loss_curve.png', 'VAE Training Loss â€” Reconstruction + KL Divergence')}
         >
           <img src={`${IMG_BASE}/vae_loss_curve.png`} alt="VAE Loss Curve" className="w-full object-cover group-hover:scale-[1.01] transition-transform duration-500" onError={e => { e.target.style.display='none'; }} />
           <div className="p-4 flex justify-between items-center border-t border-slate-800">
-            <span className="text-xs text-slate-400">Reconstruction loss (cyan) converges from 0.10 → 0.0049. KL divergence (right) decreases from 21.6 → 16.7 over 30 epochs — actively regularizing the latent space (not collapsed). β=0.001 keeps KL weighted correctly.</span>
+            <span className="text-xs text-slate-400">Reconstruction loss (cyan) converges from 0.10 â†’ 0.0049. KL divergence (right) decreases from 21.6 â†’ 16.7 over 30 epochs â€” actively regularizing the latent space (not collapsed). Î²=0.001 keeps KL weighted correctly.</span>
             <span className="text-[10px] font-bold text-indigo-400 uppercase">Click to expand</span>
           </div>
         </div>
@@ -194,17 +188,17 @@ const GenerativeAI = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Heatmap */}
           <div
-            className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden cursor-zoom-in hover:ring-2 hover:ring-amber-500/30 transition-all group"
-            onClick={() => openModal('vae_hyperparameter_grid.png', 'Hyperparameter Tuning Grid — Latent Dim × Batch Size')}
+            className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-2xl overflow-hidden cursor-zoom-in hover:ring-2 hover:ring-amber-500/30 transition-all group"
+            onClick={() => openModal('vae_hyperparameter_grid.png', 'Hyperparameter Tuning Grid â€” Latent Dim Ã— Batch Size')}
           >
             <img src={`${IMG_BASE}/vae_hyperparameter_grid.png`} alt="HP Grid" className="w-full object-cover group-hover:scale-[1.01] transition-transform duration-500" onError={e => { e.target.style.display='none'; }} />
           </div>
 
           {/* Results Table */}
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+          <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-2xl overflow-hidden">
             <div className="p-5 border-b border-slate-800">
               <h3 className="text-sm font-bold text-white">Tuning Results</h3>
-              <p className="text-[10px] text-slate-500 mt-0.5">Latent dim × Batch size — 5 epochs each</p>
+              <p className="text-[10px] text-slate-500 mt-0.5">Latent dim Ã— Batch size â€” 5 epochs each</p>
             </div>
             <div className="overflow-auto">
               <table className="w-full text-xs">
@@ -252,8 +246,8 @@ const GenerativeAI = () => {
         <SectionDivider title="Generated Samples Analysis" badge={`${genStats?.n_generated?.toLocaleString() || "2,746"} Synthetic Samples`} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div
-            className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden cursor-zoom-in hover:ring-2 hover:ring-purple-500/30 transition-all group"
-            onClick={() => openModal('vae_latent_space.png', 'VAE Latent Space — PCA 2D Projection by AQI Category')}
+            className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-2xl overflow-hidden cursor-zoom-in hover:ring-2 hover:ring-purple-500/30 transition-all group"
+            onClick={() => openModal('vae_latent_space.png', 'VAE Latent Space â€” PCA 2D Projection by AQI Category')}
           >
             <img src={`${IMG_BASE}/vae_latent_space.png`} alt="Latent Space" className="w-full h-full object-contain group-hover:scale-[1.01] transition-transform duration-500" onError={e => { e.target.style.display='none'; }} />
             <div className="p-4 border-t border-slate-800">
@@ -261,7 +255,7 @@ const GenerativeAI = () => {
             </div>
           </div>
           <div
-            className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden cursor-zoom-in hover:ring-2 hover:ring-emerald-500/30 transition-all group"
+            className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-2xl overflow-hidden cursor-zoom-in hover:ring-2 hover:ring-emerald-500/30 transition-all group"
             onClick={() => openModal('vae_real_vs_synthetic.png', 'Real vs Synthetic AQI Feature Distributions')}
           >
             <img src={`${IMG_BASE}/vae_real_vs_synthetic.png`} alt="Real vs Synthetic" className="w-full object-cover group-hover:scale-[1.01] transition-transform duration-500" onError={e => { e.target.style.display='none'; }} />
@@ -272,8 +266,8 @@ const GenerativeAI = () => {
         </div>
         {genStats && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-            <StatCard label="Real PM2.5 Mean" value={`${genStats.real_pm25_mean?.toFixed(1)} μg`} color="indigo" />
-            <StatCard label="Synthetic PM2.5 Mean" value={`${genStats.generated_pm25_mean?.toFixed(1)} μg`} color="cyan" />
+            <StatCard label="Real PM2.5 Mean" value={`${genStats.real_pm25_mean?.toFixed(1)} Î¼g`} color="indigo" />
+            <StatCard label="Synthetic PM2.5 Mean" value={`${genStats.generated_pm25_mean?.toFixed(1)} Î¼g`} color="cyan" />
             <StatCard label="PCA Variance PC1" value={`${(genStats.pca_variance_explained?.[0] * 100)?.toFixed(1)}%`} color="amber" />
             <StatCard label="PCA Variance PC2" value={`${(genStats.pca_variance_explained?.[1] * 100)?.toFixed(1)}%`} color="emerald" />
           </div>
@@ -285,7 +279,7 @@ const GenerativeAI = () => {
         <SectionDivider title="Data Augmentation Impact" badge="VAE + Bi-LSTM Retraining" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1 space-y-4">
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+            <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-2xl p-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20">
                   <Award size={20} className="text-emerald-400" />
@@ -336,7 +330,7 @@ const GenerativeAI = () => {
 
           <div className="lg:col-span-2">
             <div
-              className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden cursor-zoom-in hover:ring-2 hover:ring-indigo-500/30 transition-all group h-full"
+              className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-2xl overflow-hidden cursor-zoom-in hover:ring-2 hover:ring-indigo-500/30 transition-all group h-full"
               onClick={() => openModal('bilstm_confusion_matrix_augmented.png', 'Augmented Bi-LSTM Confusion Matrix')}
             >
               <div className="p-4 border-b border-slate-800 flex justify-between items-center">
@@ -364,13 +358,13 @@ const GenerativeAI = () => {
             <h3 className="text-lg font-bold text-white mb-2">Conclusion</h3>
             <p className="text-slate-400 text-sm leading-relaxed">
               The VAE generative model was trained on all 71 environmental features from 842,160 samples of the India multi-city dataset.
-              Hyperparameter tuning was performed across {tuningData?.results?.length || 6} configurations (latent ∈ {'{4, 8, 16}'} × batch ∈ {'{32, 64}'}).
-              The optimal configuration — <strong className="text-cyan-400">{bestConfig?.config_label}</strong> — achieved the lowest reconstruction loss of <strong className="text-cyan-400">{bestConfig?.final_loss}</strong>.
+              Hyperparameter tuning was performed across {tuningData?.results?.length || 6} configurations (latent âˆˆ {'{4, 8, 16}'} Ã— batch âˆˆ {'{32, 64}'}).
+              The optimal configuration â€” <strong className="text-cyan-400">{bestConfig?.config_label}</strong> â€” achieved the lowest reconstruction loss of <strong className="text-cyan-400">{bestConfig?.final_loss}</strong>.
               The decoder successfully generates {genStats?.n_generated?.toLocaleString() || '2,746'} synthetic AQI samples whose PM2.5 distribution closely matches real observations,
               confirming the model has learned the underlying data manifold.
             </p>
             <div className="flex flex-wrap gap-2 mt-4">
-              {['β-VAE', 'Reparameterization Trick', 'KL Divergence', 'Latent Space', 'Synthetic Data Generation', 'Hyperparameter Tuning'].map(tag => (
+              {['Î²-VAE', 'Reparameterization Trick', 'KL Divergence', 'Latent Space', 'Synthetic Data Generation', 'Hyperparameter Tuning'].map(tag => (
                 <span key={tag} className="text-[10px] font-bold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-1 rounded-full uppercase tracking-wide">{tag}</span>
               ))}
             </div>
@@ -391,3 +385,4 @@ const GenerativeAI = () => {
 };
 
 export default GenerativeAI;
+

@@ -12,6 +12,7 @@ import {
   Legend,
 } from 'recharts';
 import api from '../services/api';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const IMG_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/images`;
 const MONTH_NAMES = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -39,17 +40,14 @@ const ImageCard = ({ name, file, description, loading }) => {
   }, [file]);
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col">
+    <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-xl overflow-hidden flex flex-col">
       <div className="p-4 border-b border-slate-800">
         <h3 className="text-base font-semibold text-white">{name}</h3>
         {description && <p className="text-xs text-slate-500 mt-1">{description}</p>}
       </div>
       <div className="flex-1 bg-slate-950 flex items-center justify-center min-h-[300px] p-3 relative">
         {loading ? (
-          <div className="flex flex-col items-center gap-3 text-slate-600">
-            <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-            <span className="text-xs">Generating plot...</span>
-          </div>
+          <LoadingOverlay message="Generating plot..." />
         ) : imgError ? (
           <div className="flex flex-col items-center gap-2 text-slate-600 text-sm">
             <span className="text-3xl">Chart unavailable</span>
@@ -173,7 +171,7 @@ const EDA = () => {
         )}
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-6">
+      <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-xl p-5 mb-6">
         <h2 className="text-sm font-semibold text-slate-300 mb-4">Filter & Regenerate Plots</h2>
         <div className="flex flex-wrap gap-4 items-end">
           <div className="flex flex-col gap-1">
@@ -233,7 +231,7 @@ const EDA = () => {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-xl p-4">
           <h3 className="text-base font-semibold text-white">Citywise AQI Summary</h3>
           <p className="text-xs text-slate-500 mt-1">Average mapped AQI score and record counts by city.</p>
           <div className="w-full h-[280px] mt-3">
@@ -282,7 +280,7 @@ const EDA = () => {
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-xl p-4">
           <h3 className="text-base font-semibold text-white">Monthwise AQI Summary</h3>
           <p className="text-xs text-slate-500 mt-1">Average mapped AQI score by month for the current filter scope.</p>
           <div className="w-full h-[280px] mt-3">
@@ -319,7 +317,7 @@ const EDA = () => {
         </div>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-6">
+      <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-xl p-4 mb-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h3 className="text-base font-semibold text-white">Raw Data Time Series</h3>
@@ -387,11 +385,8 @@ const EDA = () => {
         )}
 
         {loading && plots.length === 0 && [1, 2, 3, 4].map(i => (
-          <div key={i} className="bg-slate-900 border border-slate-800 rounded-xl min-h-[350px] flex items-center justify-center">
-            <div className="flex flex-col items-center gap-3 text-slate-600">
-              <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-              <span className="text-xs">Generating plot {i}...</span>
-            </div>
+          <div key={i} className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-xl min-h-[350px] flex items-center justify-center">
+            <LoadingOverlay message={`Generating plot ${i}...`} />
           </div>
         ))}
       </div>
@@ -400,4 +395,5 @@ const EDA = () => {
 };
 
 export default EDA;
+
 

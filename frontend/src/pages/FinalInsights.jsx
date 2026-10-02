@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const FinalInsights = () => {
   const [metrics, setMetrics] = useState([]);
@@ -31,16 +32,13 @@ const FinalInsights = () => {
       </div>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center h-64 grayscale opacity-50">
-           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500 mb-4"></div>
-           <p className="text-slate-400 font-mono text-[10px] tracking-widest uppercase italic">Consolidating Research Artifacts...</p>
-        </div>
+        <LoadingOverlay message="Consolidating Research Artifacts..." />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           
           <div className="space-y-8">
             {/* Executive Summary Card */}
-            <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-10 border-l-8 border-l-indigo-600 shadow-2xl relative overflow-hidden group">
+            <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-[2.5rem] p-10 border-l-8 border-l-indigo-600 shadow-2xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-8 opacity-5">
                  <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
               </div>
@@ -61,7 +59,7 @@ const FinalInsights = () => {
             </div>
 
             {/* Key Findings List */}
-            <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-10 shadow-xl">
+            <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-[2.5rem] p-10 shadow-xl">
                 <div className="flex items-center gap-4 mb-10">
                      <h3 className="text-white font-black text-lg uppercase tracking-tight">Research Benchmarks</h3>
                      <div className="h-px flex-1 bg-slate-800"></div>
@@ -85,7 +83,7 @@ const FinalInsights = () => {
                         <div>
                             <p className="text-white text-md font-black mb-1 uppercase tracking-tight">Consensus Reliability</p>
                             <p className="text-slate-400 text-xs leading-relaxed font-medium">
-                                High agreement scores (<span className="text-emerald-300 font-bold">≥ 6/8</span>) show a categorical alignment with CPCB standards at 98% confidence, effectively suppressing individual model bias errors.
+                                High agreement scores (<span className="text-emerald-300 font-bold">â‰¥ 6/8</span>) show a categorical alignment with CPCB standards at 98% confidence, effectively suppressing individual model bias errors.
                             </p>
                         </div>
                     </li>
@@ -106,7 +104,7 @@ const FinalInsights = () => {
 
           <div className="space-y-8">
               {/* Architecture Battle Summary */}
-              <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden flex flex-col justify-between h-full bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]">
+              <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden flex flex-col justify-between h-full bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]">
                   <div>
                     <h3 className="text-white font-black text-2xl mb-8 uppercase tracking-tight">Methodology Conclusion</h3>
                     <div className="space-y-8 text-sm">
@@ -174,3 +172,4 @@ const FinalInsights = () => {
 };
 
 export default FinalInsights;
+

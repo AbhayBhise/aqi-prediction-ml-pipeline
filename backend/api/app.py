@@ -8,7 +8,7 @@ import cachetools
 import psutil
 from tenacity import retry, stop_after_attempt, wait_exponential
 from dotenv import load_dotenv
-from agentic_chatbot import AQIAgenticBot
+from backend.api.agentic_chatbot import AQIAgenticBot
 
 # Load environment variables (from parent backend folder)
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
@@ -22,6 +22,10 @@ PROJECT_ROOT = os.path.abspath(os.path.join(BACKEND_DIR, '..'))
 # Add backend directory to sys.path to allow imports from utils, models, etc.
 if BACKEND_DIR not in sys.path:
     sys.path.append(BACKEND_DIR)
+
+import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 from flask import Flask, request, jsonify, send_from_directory, g
 from flask_cors import CORS
@@ -62,6 +66,19 @@ def print_memory_usage(stage=""):
 _DYN_MAX_FILES = 150  # 50 combos × 3 plots each
 
 app = Flask(__name__)
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({
+        "status": "healthy",
+        "version": "1.0.0",
+        "model": "HistGradientBoosting",
+        "api": "v1"
+    }), 200
+
+# ── New Decision Support Architecture ──────────────────────────────────────
+from backend.api.routes.dashboard import dashboard_bp
+app.register_blueprint(dashboard_bp, url_prefix='/api')
 
 # ── Production Deployment Hardening (Render/Proxies) ───────────────────────
 # Read real client IPs behind proxy
@@ -542,21 +559,23 @@ def _build_sequential_forecast_input(city, current_features, current_datetime, m
     return tensor, dt
 
 # ── Startup sequence ───────────────────────────────────────────────────────
-print("=" * 60)
-print("           AQI SYSTEM STARTING (PRODUCTION MODE)             ")
-print("=" * 60)
-print("[STARTUP] Pre-startup initialization...")
-print_memory_usage("Pre-Startup")
+import sys
+if "pytest" not in sys.modules:
+    print("=" * 60)
+    print("           AQI SYSTEM STARTING (PRODUCTION MODE)             ")
+    print("=" * 60)
+    print("[STARTUP] Pre-startup initialization...")
+    print_memory_usage("Pre-Startup")
 
-print("[STARTUP] Loading dataset...")
-_load_dataset_startup()  # dataset first (pure I/O, no GPU needed)
-print_memory_usage("Post-Dataset Load")
+    print("[STARTUP] Loading dataset...")
+    _load_dataset_startup()  # dataset first (pure I/O, no GPU needed)
+    print_memory_usage("Post-Dataset Load")
 
-print("[STARTUP] Eagerly preloading ML classification model ensemble...")
-load_objects()  # Eagerly preload classification model ensemble
-print_memory_usage("Post-Model Warmup")
-print("[STARTUP] Flask application startup warmup complete. Ready to serve.")
-print("=" * 60)
+    print("[STARTUP] Eagerly preloading ML classification model ensemble...")
+    load_objects()  # Eagerly preload classification model ensemble
+    print_memory_usage("Post-Model Warmup")
+    print("[STARTUP] Flask application startup warmup complete. Ready to serve.")
+    print("=" * 60)
 
 # ── Global Error Handling ──────────────────────────────────────────────────
 from werkzeug.exceptions import HTTPException
@@ -575,9 +594,6 @@ def handle_exception(e):
         "request_id": req_id
     }), 500
 
-@app.route('/health', methods=['GET'])
-def health_check():
-    return jsonify({"status": "ok", "message": "API is running."}), 200
 
 @app.route('/ready', methods=['GET'])
 def ready_check():

@@ -36,4 +36,10 @@ backend/models/vae_labeler.pkl
 # Git backups
 .git_old/
 
+# Node / frontend tooling (root level)
+node_modules/
+package-lock.json
 
+# Python tooling
+pytest.ini
+.pytest_cache/

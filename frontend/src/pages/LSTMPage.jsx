@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const IMG_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/images`;
 
@@ -38,15 +39,7 @@ const LSTMPage = () => {
 
       {/* Comparison Metrics Cards */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 h-32 animate-pulse flex flex-col justify-between">
-              <div className="h-4 bg-slate-800 rounded w-1/3"></div>
-              <div className="h-8 bg-slate-800 rounded w-1/2"></div>
-              <div className="h-2 bg-slate-800 rounded w-full"></div>
-            </div>
-          ))}
-        </div>
+        <LoadingOverlay message="Loading architecture metrics..." />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {['RNN', 'LSTM', 'BiLSTM'].map((m) => (
@@ -57,7 +50,7 @@ const LSTMPage = () => {
                </div>
                <div className="flex items-baseline gap-2">
                   <span className="text-3xl font-black text-white">
-                      {metrics?.[m]?.accuracy ? (metrics[m].accuracy * 100).toFixed(1) : '—'}%
+                      {metrics?.[m]?.accuracy ? (metrics[m].accuracy * 100).toFixed(1) : 'â€”'}%
                   </span>
                   <span className="text-slate-500 text-xs font-medium">Accuracy</span>
                </div>
@@ -69,7 +62,7 @@ const LSTMPage = () => {
                       ></div>
                   </div>
                   <span className="text-[10px] font-mono text-slate-400">
-                      F1: {metrics?.[m]?.f1_score ? metrics[m].f1_score.toFixed(3) : '—'}
+                      F1: {metrics?.[m]?.f1_score ? metrics[m].f1_score.toFixed(3) : 'â€”'}
                   </span>
                </div>
                <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
@@ -82,7 +75,7 @@ const LSTMPage = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {/* Comparative Analysis Plot */}
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl relative group">
+        <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl overflow-hidden shadow-2xl relative group">
             <div className="p-6 border-b border-slate-800 bg-slate-950/40 flex justify-between items-center">
                 <div>
                     <h3 className="text-lg font-bold text-white">Comparative Benchmark</h3>
@@ -101,7 +94,7 @@ const LSTMPage = () => {
         </div>
 
         {/* BiLSTM Confusion Matrix */}
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl relative group">
+        <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl overflow-hidden shadow-2xl relative group">
             <div className="p-6 border-b border-slate-800 bg-slate-950/40 flex justify-between items-center text-right">
                 <div className="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-md">PRE-TRAINED</div>
                 <div>
@@ -122,7 +115,7 @@ const LSTMPage = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
         <div className="lg:col-span-2 space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 relative overflow-hidden group border-l-4 border-indigo-500 shadow-xl">
+            <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-8 relative overflow-hidden group border-l-4 border-indigo-500 shadow-xl">
                  <h3 className="text-white font-bold text-xl mb-4">Architectural Rationale</h3>
                  <p className="text-slate-400 text-sm leading-relaxed mb-6">
                     While Simple RNNs suffer from vanishing gradients, <span className="text-white font-bold italic">LSTMs</span> and <span className="text-white font-bold italic">BiLSTMs</span> maintain long-term memory. Bi-directional models look at both past and future (within the window) to contextually understand pollutant spikes.
@@ -140,7 +133,7 @@ const LSTMPage = () => {
             </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl">
+        <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-8 shadow-2xl">
             <p className="text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">Comparative Summary</p>
             <h4 className="text-white font-bold mb-4">Key Takeaways</h4>
             <div className="space-y-6">
@@ -178,11 +171,11 @@ const LSTMPage = () => {
       <div className="border-t border-slate-800 pt-12">
         <h2 className="text-xl font-bold text-white mb-8">Base LSTM Optimization</h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-4">
+            <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-4">
                 <p className="text-[10px] text-slate-500 mb-4 px-2">Convergence History</p>
                 <img src={`${IMG_BASE}/improved_lstm_loss.png`} alt="LSTM Loss" className="w-full rounded-xl" />
             </div>
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-4">
+            <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-4">
                 <p className="text-[10px] text-slate-500 mb-4 px-2">State Confusion Matrix</p>
                 <img src={`${IMG_BASE}/improved_lstm_cm.png`} alt="LSTM CM" className="w-full rounded-xl" />
             </div>
@@ -193,3 +186,4 @@ const LSTMPage = () => {
 };
 
 export default LSTMPage;
+

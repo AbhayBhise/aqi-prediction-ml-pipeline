@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Bot, Brain, Zap, Database, ArrowRight, MessageSquare, Send, User, Cpu, Shield, Activity } from 'lucide-react';
 
 const TOOLS = [
   { name: 'get_current_aqi()', desc: 'Fetches live AQI from OpenWeatherMap API for any city', color: 'cyan', icon: Activity },
   { name: 'query_dataset()', desc: 'Queries the 842,160-row India AQI dataset in memory', color: 'indigo', icon: Database },
-  { name: 'forecast_model()', desc: 'Runs LSTM/XGBoost forecast for 1h–24h horizons', color: 'emerald', icon: Brain },
+  { name: 'forecast_model()', desc: 'Runs LSTM/XGBoost forecast for 1hâ€“24h horizons', color: 'emerald', icon: Brain },
   { name: 'cpcb_health_advice()', desc: 'Maps AQI category to CPCB health recommendations', color: 'amber', icon: Shield },
 ];
 
@@ -66,7 +66,7 @@ const AgenticAI = () => {
             <Bot size={20} className="text-indigo-400" />
           </div>
           <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-full">
-            Unit VI — Agentic AI &amp; ReAct Framework
+            Unit VI â€” Agentic AI &amp; ReAct Framework
           </span>
         </div>
         <h1 className="text-3xl font-bold text-white tracking-tight">Agentic AI Reasoning Engine</h1>
@@ -80,7 +80,7 @@ const AgenticAI = () => {
         <div className="flex items-center gap-4 mb-8">
           <h2 className="text-2xl font-bold text-white tracking-tight">ReAct Loop Architecture</h2>
           <div className="h-px flex-1 bg-slate-800" />
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Reason → Act → Observe</span>
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Reason â†’ Act â†’ Observe</span>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           {REACT_STEPS.map((s, i) => {
@@ -115,7 +115,7 @@ const AgenticAI = () => {
             }[t.color];
             return (
               <div key={i} className={`border rounded-xl p-4 flex items-start gap-4 ${color}`}>
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-slate-900`}>
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-slate-900/40 backdrop-blur-md shadow-xl`}>
                   <Icon size={16} className={color.split(' ')[2]} />
                 </div>
                 <div>
@@ -128,18 +128,18 @@ const AgenticAI = () => {
         </div>
       </div>
 
-      {/* Chat Interface — Full Page */}
+      {/* Chat Interface â€” Full Page */}
       <div className="mb-12">
         <div className="flex items-center gap-4 mb-8">
           <h2 className="text-2xl font-bold text-white tracking-tight">Live Agent Interface</h2>
           <div className="h-px flex-1 bg-slate-800" />
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Custom ReAct Engine · Live</span>
+            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Custom ReAct Engine Â· Live</span>
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+        <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
           {/* Chat Header */}
           <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 p-5 flex items-center gap-4">
             <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
@@ -147,7 +147,7 @@ const AgenticAI = () => {
             </div>
             <div>
               <p className="font-bold text-white text-base">AQI Project Data Agent</p>
-              <p className="text-[10px] text-indigo-200 uppercase font-black tracking-widest">ReAct Framework · Unit VI · Syllabus Traceable</p>
+              <p className="text-[10px] text-indigo-200 uppercase font-black tracking-widest">ReAct Framework Â· Unit VI Â· Syllabus Traceable</p>
             </div>
             <div className="ml-auto flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full">
               <Cpu size={12} className="text-white" />
@@ -216,7 +216,7 @@ const AgenticAI = () => {
           </div>
 
           {/* Input */}
-          <div className="p-5 bg-slate-900 border-t border-slate-800">
+          <div className="p-5 bg-slate-900/40 backdrop-blur-md shadow-xl border-t border-slate-800">
             <div className="flex gap-3 bg-slate-950 p-2 rounded-2xl border border-slate-800 focus-within:border-indigo-500/50 transition-colors">
               <input
                 type="text"
@@ -235,7 +235,7 @@ const AgenticAI = () => {
               </button>
             </div>
             <p className="text-center text-[10px] text-slate-600 mt-3 uppercase font-bold tracking-tighter">
-              Powered by Custom AQI Engine · Secured & Rate Limited
+              Powered by Custom AQI Engine Â· Secured & Rate Limited
             </p>
           </div>
         </div>
@@ -250,28 +250,28 @@ const AgenticAI = () => {
           <div>
             <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">LLM Backend</p>
             <ul className="space-y-1 text-slate-400 text-xs">
-              <li>• Custom AI Reasoning Engine</li>
-              <li>• Custom Python SDK integration</li>
-              <li>• Structured JSON output (thought_trace + response)</li>
-              <li>• Rate limiting: 4 req/min (free tier)</li>
+              <li>â€¢ Custom AI Reasoning Engine</li>
+              <li>â€¢ Custom Python SDK integration</li>
+              <li>â€¢ Structured JSON output (thought_trace + response)</li>
+              <li>â€¢ Rate limiting: 4 req/min (free tier)</li>
             </ul>
           </div>
           <div>
             <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2">Agent Tools</p>
             <ul className="space-y-1 text-slate-400 text-xs">
-              <li>• Live AQI via OpenWeatherMap API</li>
-              <li>• In-memory 842k-row dataset access</li>
-              <li>• CPCB breakpoint health mapping</li>
-              <li>• Project metrics &amp; syllabus grounding</li>
+              <li>â€¢ Live AQI via OpenWeatherMap API</li>
+              <li>â€¢ In-memory 842k-row dataset access</li>
+              <li>â€¢ CPCB breakpoint health mapping</li>
+              <li>â€¢ Project metrics &amp; syllabus grounding</li>
             </ul>
           </div>
           <div>
             <p className="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-2">ReAct Protocol</p>
             <ul className="space-y-1 text-slate-400 text-xs">
-              <li>• Thought → Action → Observation loop</li>
-              <li>• Thought trace visible in UI (transparency)</li>
-              <li>• Graceful fallback on quota exhaustion</li>
-              <li>• Safety filter integration</li>
+              <li>â€¢ Thought â†’ Action â†’ Observation loop</li>
+              <li>â€¢ Thought trace visible in UI (transparency)</li>
+              <li>â€¢ Graceful fallback on quota exhaustion</li>
+              <li>â€¢ Safety filter integration</li>
             </ul>
           </div>
         </div>
@@ -281,3 +281,4 @@ const AgenticAI = () => {
 };
 
 export default AgenticAI;
+

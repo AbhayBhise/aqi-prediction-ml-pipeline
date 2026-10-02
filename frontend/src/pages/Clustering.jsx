@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 
 const IMG_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/images`;
@@ -52,7 +52,7 @@ const Clustering = () => {
           ['Hierarchical', '#14b8a6', 'Tree-based mapping of nested pollutant relationships.'], 
           ['DBSCAN', '#f59e0b', 'Density-based noise filtering for irregular shapes.']
         ].map(([algo, color, desc]) => (
-          <div key={algo} className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-xl">
+          <div key={algo} className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-8 shadow-xl">
             <p className="text-slate-500 text-[10px] uppercase font-black tracking-widest">{algo} Efficiency</p>
             <h2 className="text-4xl font-black mt-2 mb-4" style={{ color }}>{scores[algo] ?? '...'}</h2>
             <p className="text-slate-400 text-xs leading-relaxed">{desc}</p>
@@ -62,7 +62,7 @@ const Clustering = () => {
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* PCA Plot */}
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+        <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
             <div className="p-6 border-b border-slate-800 bg-slate-950/40">
                 <h3 className="text-lg font-bold text-white">PCA Latent Space Projection</h3>
                 <p className="text-xs text-slate-500 mt-1">High-dimensional chemistry (12 features) reduced to 2 principal components.</p>
@@ -95,7 +95,7 @@ const Clustering = () => {
         </div>
 
         {/* Dendrogram Plot */}
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+        <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
             <div className="p-6 border-b border-slate-800 bg-slate-950/40">
                 <h3 className="text-lg font-bold text-white">Hierarchical Dendrogram</h3>
                 <p className="text-xs text-slate-500 mt-1">Agglomerative linkage evidence showing how pollutant groups merge scientifically.</p>
@@ -109,7 +109,7 @@ const Clustering = () => {
                     />
                 ) : (
                     <div className="text-center p-12 border-2 border-dashed border-slate-800 rounded-3xl w-full">
-                        <div className="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-800 text-slate-700">
+                        <div className="w-12 h-12 bg-slate-900/40 backdrop-blur-md shadow-xl rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-800 text-slate-700">
                             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg>
                         </div>
                         <p className="text-xs text-slate-700 font-bold uppercase tracking-widest mb-4">Hierarchical Matrix Not Computed</p>
@@ -135,3 +135,4 @@ const Clustering = () => {
 };
 
 export default Clustering;
+

@@ -1,20 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  BarChart3,
-  LineChart,
-  Brain,
-  Network,
-  Activity,
-  Zap,
-  MessageSquare,
-  Cpu,
-  Bot,
-  Moon,
-  Sun,
-  Coffee
-} from "lucide-react";
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Moon, Star } from "lucide-react";
 import Dashboard from './pages/Dashboard';
 import EDA from './pages/EDA';
 import ModelComparison from './pages/ModelComparison';
@@ -25,137 +12,74 @@ import Prediction from "./pages/Prediction";
 import GenerativeAI from './pages/GenerativeAI';
 import AgenticAI from './pages/AgenticAI';
 import BuyMeACoffeeModal from './components/BuyMeACoffeeModal';
+import SidePanel from './components/SidePanel';
+import AIChatbot from './components/AIChatbot';
 
-const icons = {
-  dashboard: LayoutDashboard,
-  eda: BarChart3,
-  comparison: Activity,
-  lstm: Brain,
-  clustering: Network,
-  prediction: Zap,
-  insights: LineChart,
-  generative: Cpu,
-  agent: Bot,
-};
-
-const SidebarItem = ({ to, iconKey, text, onClick }) => {
-  const location = useLocation();
-  const isActive = location.pathname === to && !onClick;
-  const Icon = icons[iconKey] || LayoutDashboard;
-
-  if (onClick) {
-    return (
-      <button onClick={onClick} className="theme-nav-item w-full flex items-center px-4 py-3 mb-2 rounded-lg transition-colors text-slate-400 hover:bg-slate-800 hover:text-white">
-        <Icon size={20} className="mr-3" />
-        <span className="font-medium">{text}</span>
-      </button>
-    );
-  }
-
+const Layout = ({ children }) => {
   return (
-    <Link to={to} className={`theme-nav-item flex items-center px-4 py-3 mb-2 rounded-lg transition-colors ${isActive ? 'theme-nav-active bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
-      <Icon size={20} className="mr-3" />
-      <span className="font-medium">{text}</span>
-    </Link>
-  );
-};
-
-const ThemeToggle = ({ theme, onThemeChange }) => {
-  return (
-    <div className="theme-toggle mt-5 p-1 rounded-xl border border-slate-800 bg-slate-950 flex">
-      <button
-        type="button"
-        onClick={() => onThemeChange('dark')}
-        className={`theme-toggle-btn ${theme === 'dark' ? 'theme-toggle-active' : ''}`}
-        aria-pressed={theme === 'dark'}
-      >
-        <Moon size={15} />
-        <span>Dark</span>
-      </button>
-      <button
-        type="button"
-        onClick={() => onThemeChange('light')}
-        className={`theme-toggle-btn ${theme === 'light' ? 'theme-toggle-active' : ''}`}
-        aria-pressed={theme === 'light'}
-      >
-        <Sun size={15} />
-        <span>Light</span>
-      </button>
-    </div>
-  );
-};
-
-const Sidebar = ({ theme, onThemeChange }) => {
-  return (
-    <div className="theme-sidebar w-64 bg-slate-900 border-r border-slate-800 h-screen overflow-y-auto shrink-0">
-      <div className="p-6">
-        <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">AQI ML Vision</h1>
-        <p className="text-slate-500 text-sm mt-1">Analytics Dashboard</p>
-        <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
-      </div>
-      <div className="px-4 mt-6">
-        <p className="px-4 text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Core Modules</p>
-        <SidebarItem to="/" iconKey="dashboard" text="Dashboard Overview" />
-        <SidebarItem to="/eda" iconKey="eda" text="Dataset EDA" />
-        <SidebarItem to="/comparison" iconKey="comparison" text="Model Comparison" />
-        <SidebarItem to="/lstm" iconKey="lstm" text="LSTM Analytics" />
-        <SidebarItem to="/clustering" iconKey="clustering" text="Clustering Analysis" />
-        <SidebarItem to="/prediction" iconKey="prediction" text="AQI Forecast" />
-        <SidebarItem to="/insights" iconKey="insights" text="Final Insights" />
-
-        <div className="pt-4 mt-4 border-t border-slate-800">
-          <p className="px-4 text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Advanced AI</p>
-          <SidebarItem to="/generative" iconKey="generative" text="Generative AI (VAE)" />
-          <SidebarItem to="/agent" iconKey="agent" text="Agentic AI" />
-        </div>
-
-        <div className="pt-4 mt-4 border-t border-slate-800">
-          <p className="px-4 text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Support</p>
-          <a 
-            href="https://buymeacoffee.com/bhiseabhayq" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="theme-nav-item flex items-center px-4 py-3 mb-2 rounded-lg transition-colors text-[#FFDD00] bg-[#FFDD00]/5 hover:bg-[#FFDD00]/15 border border-[#FFDD00]/20"
+    <div className="app-shell theme-dark flex bg-slate-950 h-screen overflow-hidden relative">
+      {/* Global Celestial Background Animations */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        <motion.div
+          key="night-bg"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900/90 to-indigo-950"
+        >
+          {/* Dynamic Moon */}
+          <motion.div 
+            className="absolute text-slate-200 drop-shadow-[0_0_40px_rgba(203,213,225,0.7)] opacity-90"
+            animate={{ 
+              y: [0, -20, 0],
+              rotate: [0, 5, 0]
+            }}
+            transition={{ 
+              duration: 20,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            style={{ right: '15%', top: '15%' }}
           >
-            <Coffee size={20} className="mr-3" />
-            <span className="font-medium">Buy me a coffee</span>
-          </a>
-        </div>
+            <Moon size={150} fill="currentColor" />
+          </motion.div>
+          {/* Blinking Stars */}
+          {[...Array(40)].map((_, i) => (
+            <motion.div
+              key={`star-${i}`}
+              animate={{ opacity: [0.1, 0.9, 0.1] }}
+              transition={{
+                duration: 2 + Math.random() * 4,
+                repeat: Infinity,
+                delay: Math.random() * 3,
+                ease: "easeInOut"
+              }}
+              className="absolute text-yellow-100"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                transform: `scale(${0.2 + Math.random() * 0.6})`
+              }}
+            >
+              <Star size={24} fill="currentColor" />
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
-    </div>
-  );
-};
 
-const Layout = ({ children, theme, onThemeChange }) => {
-  return (
-    <div className={`app-shell theme-${theme} flex bg-slate-950 h-screen overflow-hidden`}>
-      <Sidebar theme={theme} onThemeChange={onThemeChange} />
-      <main id="main-content" className="flex-1 overflow-y-auto p-8 relative">
+      <SidePanel />
+      <main id="main-content" className="flex-1 overflow-y-auto p-8 relative z-10 scrollbar-hide">
         {children}
       </main>
       <BuyMeACoffeeModal />
+      <AIChatbot />
     </div>
   );
 };
 
 function App() {
-  const [theme, setTheme] = useState(() => localStorage.getItem('aqi-ui-theme') || 'dark');
-
-  useEffect(() => {
-    // Set data-theme attribute for CSS variable switching
-    document.documentElement.dataset.theme = theme;
-    // Set .theme-light class for Tailwind override rules in index.css
-    if (theme === 'light') {
-      document.documentElement.classList.add('theme-light');
-    } else {
-      document.documentElement.classList.remove('theme-light');
-    }
-    localStorage.setItem('aqi-ui-theme', theme);
-  }, [theme]);
-
   return (
     <BrowserRouter>
-      <Layout theme={theme} onThemeChange={setTheme}>
+      <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/eda" element={<EDA />} />
