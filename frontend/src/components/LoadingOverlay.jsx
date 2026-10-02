@@ -75,8 +75,8 @@ const LoadingOverlay = ({ message = "Loading...", progress: externalProgress }) 
         </div>
       </div>
       
-      <div className="flex flex-col items-center space-y-2 text-indigo-400 font-medium">
-        <span>{message}</span>
+      <div className="flex flex-col items-center space-y-2 text-slate-900 dark:text-white font-medium">
+        <h3 className="text-lg font-semibold tracking-wide">{message}</h3>
         {!isExternal && (
            <p className="text-xs text-slate-500 dark:text-slate-400 font-mono tracking-wider animate-pulse text-center max-w-sm mt-2">
              {TIPS[tipIndex]}

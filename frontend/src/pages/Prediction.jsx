@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import api from '../services/api';
 
 const featureList = [
@@ -139,29 +139,29 @@ const Prediction = () => {
     <div className="pb-20">
       <div className="flex justify-between items-start mb-10 gap-8">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Future AQI Forecast</h1>
-          <p className="text-slate-400 mt-2">Predict AQI category 1h, 4h, 6h, 12h, or 24h ahead using saved forecast models.</p>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Future AQI Forecast</h1>
+          <p className="text-slate-800 dark:text-slate-300 mt-2">Predict AQI category 1h, 4h, 6h, 12h, or 24h ahead using saved forecast models.</p>
         </div>
-        <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-2xl px-5 py-3 text-right">
-          <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Active Mode</p>
+        <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-2xl px-5 py-3 text-right">
+          <p className="text-[10px] text-slate-800 dark:text-slate-200 font-black uppercase tracking-widest">Active Mode</p>
           <p className="text-sm text-indigo-300 font-bold">Chronological Forecast</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-10 items-start">
-        <div className="xl:col-span-4 bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-8 shadow-2xl sticky top-8">
+        <div className="xl:col-span-4 bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-3xl p-8 shadow-2xl sticky top-8">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-2 h-6 bg-indigo-500 rounded-full"></div>
-            <h3 className="text-lg font-bold text-white uppercase tracking-tight">Forecast Controls</h3>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight">Forecast Controls</h3>
           </div>
 
           <form onSubmit={handleForecast} className="space-y-6">
             <div>
-              <label className="block text-[10px] uppercase font-black text-slate-500 mb-2 tracking-widest">City</label>
+              <label className="block text-[10px] uppercase font-black text-slate-800 dark:text-slate-200 mb-2 tracking-widest">City</label>
               <select
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                className="w-full bg-white/50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
               >
                 {cities.map((item) => <option key={item} value={item}>{item}</option>)}
               </select>
@@ -184,42 +184,42 @@ const Prediction = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] uppercase font-black text-slate-500 mb-2 tracking-widest">Horizon</label>
+                <label className="block text-[10px] uppercase font-black text-slate-800 dark:text-slate-200 mb-2 tracking-widest">Horizon</label>
                 <select
                   value={horizon}
                   onChange={(e) => setHorizon(parseInt(e.target.value, 10))}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                  className="w-full bg-white/50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
                 >
                   {horizons.map((item) => <option key={item} value={item}>{item} hours</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-[10px] uppercase font-black text-slate-500 mb-2 tracking-widest">Time</label>
+                <label className="block text-[10px] uppercase font-black text-slate-800 dark:text-slate-200 mb-2 tracking-widest">Time</label>
                 <input
                   type="datetime-local"
                   value={datetime}
                   onChange={(e) => setDatetime(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                  className="w-full bg-white/50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[10px] uppercase font-black text-slate-500 mb-2 tracking-widest">Forecast Model</label>
+              <label className="block text-[10px] uppercase font-black text-slate-800 dark:text-slate-200 mb-2 tracking-widest">Forecast Model</label>
               <select
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                className="w-full bg-white/50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
               >
                 {modelOptions.map((item) => <option key={item.key} value={item.key}>{item.label}</option>)}
               </select>
-              <p className="mt-2 text-[10px] text-slate-500 font-bold uppercase tracking-wider">{selectedModel?.mode}</p>
+              <p className="mt-2 text-[10px] text-slate-800 dark:text-slate-200 font-bold uppercase tracking-wider">{selectedModel?.mode}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-x-6 gap-y-5">
               {featureList.map((key) => (
                 <div key={key} className="group">
-                  <label className="block text-[10px] uppercase font-black text-slate-500 mb-2 tracking-widest group-focus-within:text-indigo-400 transition-colors">
+                  <label className="block text-[10px] uppercase font-black text-slate-800 dark:text-slate-200 mb-2 tracking-widest group-focus-within:text-indigo-400 transition-colors">
                     {key.replace(/_/g, ' ').replace('ugm3', '(ug/m3)')}
                   </label>
                   <input
@@ -227,7 +227,7 @@ const Prediction = () => {
                     name={key}
                     value={formData[key]}
                     onChange={handleChange}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all font-mono"
+                    className="w-full bg-white/50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all font-mono"
                     step="any"
                     required
                   />
@@ -259,51 +259,51 @@ const Prediction = () => {
         <div className="xl:col-span-8 space-y-8">
           {result ? (
             <>
-              <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-[2.5rem] p-10 relative overflow-hidden shadow-2xl">
+              <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-[2.5rem] p-10 relative overflow-hidden shadow-2xl">
                 <div className="relative z-10">
                   <div className="flex flex-wrap items-center gap-4 mb-8">
                     <span className="bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-[0.2em]">
                       {result.horizon_hours}h Forecast
                     </span>
-                    <span className="text-slate-500 text-[10px] font-mono font-bold">MODEL: {result.model_label}</span>
-                    <span className="text-slate-500 text-[10px] font-mono font-bold">CITY: {result.city}</span>
+                    <span className="text-slate-800 dark:text-slate-200 text-[10px] font-mono font-bold">MODEL: {result.model_label}</span>
+                    <span className="text-slate-800 dark:text-slate-200 text-[10px] font-mono font-bold">CITY: {result.city}</span>
                   </div>
 
                   <div className="flex flex-col md:flex-row md:items-end gap-8 mb-10">
                     <div>
-                      <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-3">Predicted Future Category</p>
+                      <p className="text-slate-800 dark:text-slate-200 text-[10px] font-black uppercase tracking-widest mb-3">Predicted Future Category</p>
                       <h2 className={`text-7xl font-black tracking-tighter ${result.prediction === 'Hazardous' ? 'text-rose-600' : 'text-white'}`}>
                         {result.prediction.replace(/_/g, ' ')}
                       </h2>
                     </div>
                     <div className={`px-6 py-3 rounded-2xl mb-2 flex items-center gap-3 ${aqiColors[result.prediction] || 'bg-slate-700'} shadow-xl`}>
                       <div className="w-2.5 h-2.5 bg-white rounded-full animate-pulse shadow-[0_0_10px_white]"></div>
-                      <span className="text-white text-xs font-black uppercase tracking-widest">
+                      <span className="text-slate-900 dark:text-white text-xs font-black uppercase tracking-widest">
                         {result.confidence ? `${(result.confidence * 100).toFixed(1)}% confidence` : 'Forecast'}
                       </span>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-5">
-                      <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-2">Input Time</p>
-                      <p className="text-sm text-slate-200 font-mono">{new Date(result.input_time).toLocaleString()}</p>
+                    <div className="bg-slate-200/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-800 rounded-2xl p-5">
+                      <p className="text-[10px] text-slate-800 dark:text-slate-200 font-black uppercase tracking-widest mb-2">Input Time</p>
+                      <p className="text-sm text-slate-800 dark:text-slate-200 font-mono">{new Date(result.input_time).toLocaleString()}</p>
                     </div>
-                    <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-5">
-                      <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-2">Forecast For</p>
-                      <p className="text-sm text-slate-200 font-mono">{new Date(result.forecast_for).toLocaleString()}</p>
+                    <div className="bg-slate-200/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-800 rounded-2xl p-5">
+                      <p className="text-[10px] text-slate-800 dark:text-slate-200 font-black uppercase tracking-widest mb-2">Forecast For</p>
+                      <p className="text-sm text-slate-800 dark:text-slate-200 font-mono">{new Date(result.forecast_for).toLocaleString()}</p>
                     </div>
-                    <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-5">
-                      <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-2">Test Accuracy</p>
-                      <p className="text-sm text-slate-200 font-mono">{formatMetric(result.metrics?.accuracy)}</p>
+                    <div className="bg-slate-200/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-800 rounded-2xl p-5">
+                      <p className="text-[10px] text-slate-800 dark:text-slate-200 font-black uppercase tracking-widest mb-2">Test Accuracy</p>
+                      <p className="text-sm text-slate-800 dark:text-slate-200 font-mono">{formatMetric(result.metrics?.accuracy)}</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-8 shadow-xl">
-                  <h4 className="text-sm font-black text-white uppercase tracking-widest mb-6">Validation Profile</h4>
+                <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-3xl p-8 shadow-xl">
+                  <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest mb-6">Validation Profile</h4>
                   <div className="space-y-4">
                     {[
                       ['Macro F1', result.metrics?.macro_f1],
@@ -311,39 +311,39 @@ const Prediction = () => {
                       ['Severe Recall', result.metrics?.severe_class_recall],
                       ['Weighted F1', result.metrics?.f1_weighted],
                     ].map(([label, value]) => (
-                      <div key={label} className="flex justify-between items-center border-b border-slate-800/70 pb-3">
-                        <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">{label}</span>
+                      <div key={label} className="flex justify-between items-center border-b border-white/20 dark:border-slate-800/70 pb-3">
+                        <span className="text-xs text-slate-800 dark:text-slate-200 font-bold uppercase tracking-wider">{label}</span>
                         <span className="text-sm text-indigo-300 font-mono font-black">{formatMetric(value)}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-8 shadow-xl">
-                  <h4 className="text-sm font-black text-white uppercase tracking-widest mb-6">Class Probabilities</h4>
+                <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-3xl p-8 shadow-xl">
+                  <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest mb-6">Class Probabilities</h4>
                   <div className="space-y-3">
                     {Object.entries(result.probabilities || {}).map(([label, value]) => (
                       <div key={label}>
                         <div className="flex justify-between mb-1">
-                          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{label.replace(/_/g, ' ')}</span>
-                          <span className="text-[10px] text-slate-500 font-mono">{(value * 100).toFixed(1)}%</span>
+                          <span className="text-[10px] text-slate-800 dark:text-slate-300 font-bold uppercase tracking-wider">{label.replace(/_/g, ' ')}</span>
+                          <span className="text-[10px] text-slate-800 dark:text-slate-200 font-mono">{(value * 100).toFixed(1)}%</span>
                         </div>
-                        <div className="h-2 bg-slate-950 rounded-full overflow-hidden">
+                        <div className="h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                           <div className={`${aqiColors[label] || 'bg-indigo-500'} h-full rounded-full`} style={{ width: `${Math.max(value * 100, 1)}%` }}></div>
                         </div>
                       </div>
                     ))}
                     {!result.probabilities && (
-                      <p className="text-xs text-slate-500 font-bold">Probability output is not available for this model.</p>
+                      <p className="text-xs text-slate-800 dark:text-slate-200 font-bold">Probability output is not available for this model.</p>
                     )}
                   </div>
                 </div>
               </div>
             </>
           ) : (
-            <div className="flex flex-col items-center justify-center p-20 border-2 border-dashed border-slate-800 rounded-[3rem] text-slate-700 min-h-[600px]">
+            <div className="flex flex-col items-center justify-center p-20 border-2 border-dashed border-white/20 dark:border-slate-800 rounded-[3rem] text-slate-700 dark:text-slate-300 min-h-[600px]">
               <p className="font-black text-xs tracking-[0.3em] uppercase mb-2">Awaiting Forecast Request</p>
-              <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">Select horizon, model, city, and current readings</p>
+              <p className="text-[10px] text-slate-900 dark:text-white font-bold uppercase tracking-widest">Select horizon, model, city, and current readings</p>
             </div>
           )}
         </div>

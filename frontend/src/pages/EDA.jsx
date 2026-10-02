@@ -40,16 +40,16 @@ const ImageCard = ({ name, file, description, loading }) => {
   }, [file]);
 
   return (
-    <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-xl overflow-hidden flex flex-col">
-      <div className="p-4 border-b border-slate-800">
-        <h3 className="text-base font-semibold text-white">{name}</h3>
-        {description && <p className="text-xs text-slate-500 mt-1">{description}</p>}
+    <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-xl overflow-hidden flex flex-col">
+      <div className="p-4 border-b border-white/20 dark:border-slate-800">
+        <h3 className="text-base font-semibold text-slate-900 dark:text-white">{name}</h3>
+        {description && <p className="text-xs text-slate-800 dark:text-slate-200 mt-1">{description}</p>}
       </div>
-      <div className="flex-1 bg-slate-950 flex items-center justify-center min-h-[300px] p-3 relative">
+      <div className="flex-1 bg-slate-200 dark:bg-slate-900 flex items-center justify-center min-h-[300px] p-3 relative">
         {loading ? (
           <LoadingOverlay message="Generating plot..." />
         ) : imgError ? (
-          <div className="flex flex-col items-center gap-2 text-slate-600 text-sm">
+          <div className="flex flex-col items-center gap-2 text-slate-900 dark:text-white text-sm">
             <span className="text-3xl">Chart unavailable</span>
             <span className="text-xs">{file} not available</span>
           </div>
@@ -150,8 +150,8 @@ const EDA = () => {
     <div>
       <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-white">Exploratory Data Analysis</h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Exploratory Data Analysis</h1>
+          <p className="text-slate-800 dark:text-slate-300 text-sm mt-1">
             {meta.filtered
               ? `Showing filtered data for ${meta.city} - ${monthLabel} (${rowCount.toLocaleString()} rows)`
               : `Full dataset - ${rowCount ? rowCount.toLocaleString() : '839,644'} rows across 29 Indian cities`}
@@ -163,7 +163,7 @@ const EDA = () => {
             <span className="text-indigo-300 text-sm font-medium">Filtered view active</span>
             <button
               onClick={handleReset}
-              className="text-xs text-indigo-400 hover:text-white border border-indigo-700 rounded px-2 py-0.5 transition-colors"
+              className="text-xs text-indigo-400 hover:text-slate-900 dark:text-white border border-indigo-700 rounded px-2 py-0.5 transition-colors"
             >
               Reset
             </button>
@@ -171,16 +171,16 @@ const EDA = () => {
         )}
       </div>
 
-      <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-xl p-5 mb-6">
-        <h2 className="text-sm font-semibold text-slate-300 mb-4">Filter & Regenerate Plots</h2>
+      <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-xl p-5 mb-6">
+        <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-300 mb-4">Filter & Regenerate Plots</h2>
         <div className="flex flex-wrap gap-4 items-end">
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-slate-400">City</label>
+            <label className="text-xs text-slate-800 dark:text-slate-300">City</label>
             <select
               value={selectedCity}
               onChange={e => setSelectedCity(e.target.value)}
               disabled={filtersLoading}
-              className="bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 min-w-[160px] disabled:opacity-60"
+              className="bg-white/50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 min-w-[160px] disabled:opacity-60"
             >
               <option value="ALL">All Cities</option>
               {filters.cities.map(c => (
@@ -190,12 +190,12 @@ const EDA = () => {
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-slate-400">Month</label>
+            <label className="text-xs text-slate-800 dark:text-slate-300">Month</label>
             <select
               value={selectedMonth}
               onChange={e => setSelectedMonth(e.target.value)}
               disabled={filtersLoading}
-              className="bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 min-w-[140px] disabled:opacity-60"
+              className="bg-white/50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 min-w-[140px] disabled:opacity-60"
             >
               <option value="ALL">All Months</option>
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(m => (
@@ -215,7 +215,7 @@ const EDA = () => {
             {meta.filtered && (
               <button
                 onClick={handleReset}
-                className="border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="border border-slate-700 hover:border-slate-500 text-slate-800 dark:text-slate-300 hover:text-slate-900 dark:text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Clear
               </button>
@@ -224,16 +224,16 @@ const EDA = () => {
         </div>
 
         {meta.filtered && (
-          <p className="text-xs text-slate-500 mt-3">
+          <p className="text-xs text-slate-800 dark:text-slate-200 mt-3">
             Plots are generated on-demand and cached on the backend. Subsequent requests for the same filter combination load instantly.
           </p>
         )}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
-        <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-xl p-4">
-          <h3 className="text-base font-semibold text-white">Citywise AQI Summary</h3>
-          <p className="text-xs text-slate-500 mt-1">Average mapped AQI score and record counts by city.</p>
+        <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-xl p-4">
+          <h3 className="text-base font-semibold text-slate-900 dark:text-white">Citywise AQI Summary</h3>
+          <p className="text-xs text-slate-800 dark:text-slate-200 mt-1">Average mapped AQI score and record counts by city.</p>
           <div className="w-full h-[280px] mt-3">
             {cityChartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -253,12 +253,12 @@ const EDA = () => {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full flex items-center justify-center text-slate-500 text-sm">No citywise data available.</div>
+              <div className="h-full flex items-center justify-center text-slate-800 dark:text-slate-200 text-sm">No citywise data available.</div>
             )}
           </div>
-          <div className="mt-3 max-h-[190px] overflow-auto border border-slate-800 rounded-lg">
+          <div className="mt-3 max-h-[190px] overflow-auto border border-white/20 dark:border-slate-800 rounded-lg">
             <table className="w-full text-xs">
-              <thead className="bg-slate-950 text-slate-400 sticky top-0">
+              <thead className="bg-slate-200 dark:bg-slate-900 text-slate-800 dark:text-slate-300 sticky top-0">
                 <tr>
                   <th className="text-left px-3 py-2">City</th>
                   <th className="text-right px-3 py-2">Rows</th>
@@ -268,7 +268,7 @@ const EDA = () => {
               </thead>
               <tbody>
                 {citywiseSummary.slice(0, 20).map(row => (
-                  <tr key={row.City} className="border-t border-slate-800 text-slate-300">
+                  <tr key={row.City} className="border-t border-white/20 dark:border-slate-800 text-slate-800 dark:text-slate-300">
                     <td className="px-3 py-1.5">{row.City}</td>
                     <td className="px-3 py-1.5 text-right">{Number(row.records || 0).toLocaleString()}</td>
                     <td className="px-3 py-1.5 text-right">{formatNum(row.avg_aqi_score, 3)}</td>
@@ -280,9 +280,9 @@ const EDA = () => {
           </div>
         </div>
 
-        <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-xl p-4">
-          <h3 className="text-base font-semibold text-white">Monthwise AQI Summary</h3>
-          <p className="text-xs text-slate-500 mt-1">Average mapped AQI score by month for the current filter scope.</p>
+        <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-xl p-4">
+          <h3 className="text-base font-semibold text-slate-900 dark:text-white">Monthwise AQI Summary</h3>
+          <p className="text-xs text-slate-800 dark:text-slate-200 mt-1">Average mapped AQI score by month for the current filter scope.</p>
           <div className="w-full h-[280px] mt-3">
             {monthChartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -302,33 +302,33 @@ const EDA = () => {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full flex items-center justify-center text-slate-500 text-sm">No monthwise data available.</div>
+              <div className="h-full flex items-center justify-center text-slate-800 dark:text-slate-200 text-sm">No monthwise data available.</div>
             )}
           </div>
           <div className="grid grid-cols-3 gap-2 mt-3">
             {monthChartData.map(row => (
-              <div key={row.Month} className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-2">
-                <p className="text-xs text-slate-400">{row.month_name}</p>
-                <p className="text-sm text-white font-semibold">{formatNum(row.avg_aqi_score, 3)}</p>
-                <p className="text-[11px] text-slate-500">{Number(row.records || 0).toLocaleString()} rows</p>
+              <div key={row.Month} className="bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg px-3 py-2">
+                <p className="text-xs text-slate-800 dark:text-slate-300">{row.month_name}</p>
+                <p className="text-sm text-slate-900 dark:text-white font-semibold">{formatNum(row.avg_aqi_score, 3)}</p>
+                <p className="text-[11px] text-slate-800 dark:text-slate-200">{Number(row.records || 0).toLocaleString()} rows</p>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-xl p-4 mb-6">
+      <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-xl p-4 mb-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h3 className="text-base font-semibold text-white">Raw Data Time Series</h3>
-            <p className="text-xs text-slate-500 mt-1">Mean values over chronological timestamps for the selected filter.</p>
+            <h3 className="text-base font-semibold text-slate-900 dark:text-white">Raw Data Time Series</h3>
+            <p className="text-xs text-slate-800 dark:text-slate-200 mt-1">Mean values over chronological timestamps for the selected filter.</p>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-slate-400">Metric</label>
+            <label className="text-xs text-slate-800 dark:text-slate-300">Metric</label>
             <select
               value={selectedMetric}
               onChange={e => setSelectedMetric(e.target.value)}
-              className="bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 min-w-[230px]"
+              className="bg-white/50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 min-w-[230px]"
             >
               {seriesMetrics.map(metric => (
                 <option key={metric} value={metric}>{METRIC_LABELS[metric] || metric}</option>
@@ -360,7 +360,7 @@ const EDA = () => {
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-full flex items-center justify-center text-slate-500 text-sm">No raw time-series points available for this filter.</div>
+            <div className="h-full flex items-center justify-center text-slate-800 dark:text-slate-200 text-sm">No raw time-series points available for this filter.</div>
           )}
         </div>
       </div>
@@ -378,14 +378,14 @@ const EDA = () => {
           ))
         ) : (
           !loading && (
-            <div className="xl:col-span-2 text-center py-16 text-slate-600">
+            <div className="xl:col-span-2 text-center py-16 text-slate-900 dark:text-white">
               No plots available. Try applying different filters.
             </div>
           )
         )}
 
         {loading && plots.length === 0 && [1, 2, 3, 4].map(i => (
-          <div key={i} className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-xl min-h-[350px] flex items-center justify-center">
+          <div key={i} className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-xl min-h-[350px] flex items-center justify-center">
             <LoadingOverlay message={`Generating plot ${i}...`} />
           </div>
         ))}

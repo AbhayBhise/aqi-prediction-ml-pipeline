@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 
 const IMG_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/images`;
@@ -31,8 +31,8 @@ const Clustering = () => {
     <div className="pb-20">
       <div className="flex justify-between items-center mb-10">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Unsupervised Pattern Recognition</h1>
-          <p className="text-slate-400 mt-2 max-w-2xl">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Unsupervised Pattern Recognition</h1>
+          <p className="text-slate-800 dark:text-slate-300 mt-2 max-w-2xl">
             Identifying underlying pollutant regimes through latent space analysis. We utilize dimensionality reduction (PCA) and hierarchical clustering to segment city profiles.
           </p>
         </div>
@@ -52,22 +52,22 @@ const Clustering = () => {
           ['Hierarchical', '#14b8a6', 'Tree-based mapping of nested pollutant relationships.'], 
           ['DBSCAN', '#f59e0b', 'Density-based noise filtering for irregular shapes.']
         ].map(([algo, color, desc]) => (
-          <div key={algo} className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-8 shadow-xl">
-            <p className="text-slate-500 text-[10px] uppercase font-black tracking-widest">{algo} Efficiency</p>
+          <div key={algo} className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-3xl p-8 shadow-xl">
+            <p className="text-slate-800 dark:text-slate-200 text-[10px] uppercase font-black tracking-widest">{algo} Efficiency</p>
             <h2 className="text-4xl font-black mt-2 mb-4" style={{ color }}>{scores[algo] ?? '...'}</h2>
-            <p className="text-slate-400 text-xs leading-relaxed">{desc}</p>
+            <p className="text-slate-800 dark:text-slate-300 text-xs leading-relaxed">{desc}</p>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* PCA Plot */}
-        <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
-            <div className="p-6 border-b border-slate-800 bg-slate-950/40">
-                <h3 className="text-lg font-bold text-white">PCA Latent Space Projection</h3>
-                <p className="text-xs text-slate-500 mt-1">High-dimensional chemistry (12 features) reduced to 2 principal components.</p>
+        <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+            <div className="p-6 border-b border-slate-300 dark:border-slate-800 bg-slate-200/50 dark:bg-slate-900/50 backdrop-blur-md">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">PCA Latent Space Projection</h3>
+                <p className="text-xs text-slate-700 dark:text-slate-300 mt-1">High-dimensional chemistry (12 features) reduced to 2 principal components.</p>
             </div>
-            <div className="p-6 bg-slate-950 flex items-center justify-center min-h-[450px]">
+            <div className="p-6 bg-slate-200/30 dark:bg-slate-900/50 flex items-center justify-center min-h-[450px]">
                 <img
                     src={`${IMG_BASE}/pca_clusters.png`}
                     alt="PCA Cluster Plot"
@@ -75,19 +75,19 @@ const Clustering = () => {
                     onError={(e) => { e.target.src="https://placehold.co/600x400?text=PCA+Plot+Pending&font=roboto"; }}
                 />
             </div>
-            <div className="p-6 bg-slate-900/50">
-                <h4 className="text-white font-bold text-sm mb-2">Cluster Interpretations</h4>
+            <div className="p-6 bg-white/20 dark:bg-slate-900/50">
+                <h4 className="text-slate-900 dark:text-white font-bold text-sm mb-2">Cluster Interpretations</h4>
                 <div className="space-y-3">
                     <div className="flex gap-4">
                         <div className="w-1 h-8 bg-indigo-500 rounded-full shrink-0"></div>
-                        <p className="text-xs text-slate-400 leading-relaxed">
-                            <span className="text-white font-bold">Regime A (Urban Primary):</span> Characterized by high NO2 and PM2.5, typically peaking during commute hours in metropolitan zones.
+                        <p className="text-xs text-slate-800 dark:text-slate-300 leading-relaxed">
+                            <span className="text-slate-900 dark:text-white font-bold">Regime A (Urban Primary):</span> Characterized by high NO2 and PM2.5, typically peaking during commute hours in metropolitan zones.
                         </p>
                     </div>
                     <div className="flex gap-4">
                         <div className="w-1 h-8 bg-teal-500 rounded-full shrink-0"></div>
-                        <p className="text-xs text-slate-400 leading-relaxed">
-                            <span className="text-white font-bold">Regime B (Industrial Secondary):</span> High SO2 and CO concentrations from non-mobile point sources, showing less diurnal variance.
+                        <p className="text-xs text-slate-800 dark:text-slate-300 leading-relaxed">
+                            <span className="text-slate-900 dark:text-white font-bold">Regime B (Industrial Secondary):</span> High SO2 and CO concentrations from non-mobile point sources, showing less diurnal variance.
                         </p>
                     </div>
                 </div>
@@ -95,12 +95,12 @@ const Clustering = () => {
         </div>
 
         {/* Dendrogram Plot */}
-        <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
-            <div className="p-6 border-b border-slate-800 bg-slate-950/40">
-                <h3 className="text-lg font-bold text-white">Hierarchical Dendrogram</h3>
-                <p className="text-xs text-slate-500 mt-1">Agglomerative linkage evidence showing how pollutant groups merge scientifically.</p>
+        <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+            <div className="p-6 border-b border-slate-300 dark:border-slate-800 bg-slate-200/50 dark:bg-slate-900/50 backdrop-blur-md">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Hierarchical Dendrogram</h3>
+                <p className="text-xs text-slate-700 dark:text-slate-300 mt-1">Agglomerative linkage evidence showing how pollutant groups merge scientifically.</p>
             </div>
-            <div className="p-6 bg-slate-950 flex items-center justify-center min-h-[450px]">
+            <div className="p-6 bg-slate-200/30 dark:bg-slate-900/50 flex items-center justify-center min-h-[450px]">
                 {dendUrl ? (
                     <img
                         src={dendUrl}
@@ -108,11 +108,11 @@ const Clustering = () => {
                         className="max-w-full rounded-xl animate-in fade-in duration-700"
                     />
                 ) : (
-                    <div className="text-center p-12 border-2 border-dashed border-slate-800 rounded-3xl w-full">
-                        <div className="w-12 h-12 bg-slate-900/40 backdrop-blur-md shadow-xl rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-800 text-slate-700">
+                    <div className="text-center p-12 border-2 border-dashed border-white/20 dark:border-slate-800 rounded-3xl w-full">
+                        <div className="w-12 h-12 bg-white/10 dark:bg-slate-900/40 backdrop-blur-md shadow-xl rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20 dark:border-slate-800 text-slate-700 dark:text-slate-300">
                             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg>
                         </div>
-                        <p className="text-xs text-slate-700 font-bold uppercase tracking-widest mb-4">Hierarchical Matrix Not Computed</p>
+                        <p className="text-xs text-slate-700 dark:text-slate-300 font-bold uppercase tracking-widest mb-4">Hierarchical Matrix Not Computed</p>
                         <button 
                             onClick={generateDendrogram}
                             className="text-xs text-indigo-400 hover:text-indigo-300 font-bold underline underline-offset-4"
@@ -123,9 +123,9 @@ const Clustering = () => {
                 )}
             </div>
             <div className="p-6">
-                 <h4 className="text-white font-bold text-sm mb-4">Methodology Note</h4>
-                 <p className="text-xs text-slate-400 leading-relaxed bg-slate-950/50 p-4 rounded-xl border border-slate-800">
-                    The dendrogram is computed using <span className="text-indigo-400 font-mono">Ward's method</span> on a normalized subset of the research dataset. It identifies at what distance threshold individual city AQI profiles become statistically indistinguishable.
+                 <h4 className="text-slate-900 dark:text-white font-bold text-sm mb-4">Methodology Note</h4>
+                 <p className="text-xs text-slate-800 dark:text-slate-300 leading-relaxed bg-slate-200/50 dark:bg-slate-900/50 backdrop-blur-md p-4 rounded-xl border border-slate-300 dark:border-slate-800">
+                    The dendrogram is computed using <span className="text-indigo-600 dark:text-indigo-400 font-mono">Ward's method</span> on a normalized subset of the research dataset. It identifies at what distance threshold individual city AQI profiles become statistically indistinguishable.
                  </p>
             </div>
         </div>

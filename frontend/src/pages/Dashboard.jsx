@@ -145,9 +145,9 @@ const Dashboard = () => {
   const getWeatherIcon = (weathercode) => {
     if (weathercode === undefined) return <Sun className="w-12 h-12 text-yellow-400" />;
     if (weathercode <= 3) return <Sun className="w-12 h-12 text-yellow-400" />;
-    if (weathercode >= 45 && weathercode <= 48) return <Cloud className="w-12 h-12 text-slate-400" />;
+    if (weathercode >= 45 && weathercode <= 48) return <Cloud className="w-12 h-12 text-slate-400 dark:text-slate-300" />;
     if (weathercode >= 51 && weathercode <= 67) return <CloudRain className="w-12 h-12 text-blue-400" />;
-    if (weathercode >= 71 && weathercode <= 77) return <Cloud className="w-12 h-12 text-slate-200" />;
+    if (weathercode >= 71 && weathercode <= 77) return <Cloud className="w-12 h-12 text-slate-300 dark:text-slate-200" />;
     if (weathercode >= 80 && weathercode <= 82) return <CloudRain className="w-12 h-12 text-blue-500" />;
     if (weathercode >= 95) return <Wind className="w-12 h-12 text-indigo-400" />;
     return <Sun className="w-12 h-12 text-yellow-400" />;
@@ -166,22 +166,22 @@ const Dashboard = () => {
           <>
             {/* Top Info Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              <div className={`backdrop-blur-md border rounded-xl p-6 bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-slate-800 shadow-xl `}>
+              <div className={`backdrop-blur-md border rounded-xl p-6 bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-white/20 dark:border-slate-800 shadow-xl `}>
                 <p className={` text-sm font-medium`}>Dataset Rows</p>
                 <h2 className={`text-3xl font-bold mt-2 `}>842,160</h2>
               </div>
-              <div className={`backdrop-blur-md border rounded-xl p-6 bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-slate-800 shadow-xl `}>
+              <div className={`backdrop-blur-md border rounded-xl p-6 bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-white/20 dark:border-slate-800 shadow-xl `}>
                 <p className={` text-sm font-medium`}>Features</p>
                 <h2 className={`text-3xl font-bold mt-2 `}>71</h2>
               </div>
-              <div className={`backdrop-blur-md border rounded-xl p-6 bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-slate-800 shadow-xl `}>
+              <div className={`backdrop-blur-md border rounded-xl p-6 bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-white/20 dark:border-slate-800 shadow-xl `}>
                 <p className={` text-sm font-medium`}>ML Models Trained</p>
                 <h2 className={`text-3xl font-bold mt-2 `}>10</h2>
               </div>
               
               {/* Live Weather Card */}
-              <div className={`backdrop-blur-md border rounded-xl p-6 bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-slate-800 shadow-xl relative overflow-hidden `}>
-                <div className="absolute top-0 right-0 -mt-4 -mr-4 opacity-10 text-slate-800">
+              <div className={`backdrop-blur-md border rounded-xl p-6 bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-white/20 dark:border-slate-800 shadow-xl relative overflow-hidden `}>
+                <div className="absolute top-0 right-0 -mt-4 -mr-4 opacity-10 text-slate-800 dark:text-slate-200">
                   <Wind className="w-32 h-32" />
                 </div>
                 <div className="flex justify-between items-start">
@@ -214,7 +214,7 @@ const Dashboard = () => {
 
             {/* Insights Section: System Limitations & Daily Summary */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              <div className={`lg:col-span-2 backdrop-blur-md border rounded-xl p-6 bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-slate-800 shadow-xl bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-slate-800 shadow-xl `}>
+              <div className={`lg:col-span-2 backdrop-blur-md border rounded-xl p-6 bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-white/20 dark:border-slate-800 shadow-xl bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-white/20 dark:border-slate-800 shadow-xl `}>
                 <div className="flex items-center mb-6">
                   <BookOpen className={`w-5 h-5 mr-2 `} />
                   <h3 className={`text-lg font-semibold `}>System Limitations & Optimal Solutions</h3>
@@ -260,7 +260,7 @@ const Dashboard = () => {
               </div>
 
               {/* Daily Summary & Alerts */}
-              <div className={`backdrop-blur-md border rounded-xl p-6 bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-slate-800 shadow-xl flex flex-col bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-slate-800 shadow-xl `}>
+              <div className={`backdrop-blur-md border rounded-xl p-6 bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-white/20 dark:border-slate-800 shadow-xl flex flex-col bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-white/20 dark:border-slate-800 shadow-xl `}>
                 <h3 className={`text-lg font-semibold mb-4 `}>Daily Summary</h3>
                 
                 <div className={`border rounded-lg p-4 mb-6 `}>
@@ -297,7 +297,7 @@ const Dashboard = () => {
             </div>
 
             {/* Forecast Bar Graph (At the Bottom) */}
-            <div className={`backdrop-blur-md border rounded-xl p-6 bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-slate-800 shadow-xl mb-8 `}>
+            <div className={`backdrop-blur-md border rounded-xl p-6 bg-white/10 border-white/20 dark:bg-slate-900/40 dark:border-white/20 dark:border-slate-800 shadow-xl mb-8 `}>
               <div className="flex justify-between items-center mb-6">
                 <h3 className={`text-lg font-semibold `}>Aggregate AQI Category Distribution</h3>
                 <span className={`px-3 py-1 text-xs font-medium rounded-full border `}>

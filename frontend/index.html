@@ -3,8 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="AQI ML Vision — forecasting, benchmarking and generative modelling for India's urban air quality." />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>AQI ML Vision — Air Quality Analytics</title>
+    <script>
+      /* Resolve day/night BEFORE first paint so the page never flashes dark on a
+         daytime load. Deliberately mirrors the 6am-7pm rule in useCelestialSky. */
+      (function () {
+        var h = new Date().getHours();
+        var isDay = h >= 6 && h < 19;
+        var el = document.documentElement;
+        el.setAttribute('data-theme', isDay ? 'light' : 'dark');
+        el.style.backgroundColor = isDay ? '#e8f4fb' : '#020617';
+        el.style.colorScheme = isDay ? 'light' : 'dark';
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

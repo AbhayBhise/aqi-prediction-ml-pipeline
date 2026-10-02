@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import api from '../services/api';
 import ImageModal from '../components/ImageModal';
+<<<<<<< HEAD
 import LoadingOverlay from '../components/LoadingOverlay';
+=======
+import useMCStore from '../store/useMCStore';
+>>>>>>> 1a6b8c8 (feat: Enhance frontend with Shadcn UI, dark mode text contrast fixes, state management and CelestialSky component)
 
 const IMG_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/images`;
 
 const ModelComparison = () => {
-  const [metrics, setMetrics] = useState([]);
-  const [forecastMetrics, setForecastMetrics] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { metrics, forecastMetrics, loading, hasLoaded, setAll } = useMCStore();
   const [activeMetric, setActiveMetric] = useState('Accuracy'); // 'Accuracy' | 'MacroF1' | 'SevereRecall'
   
   // Modal State
@@ -17,17 +19,21 @@ const ModelComparison = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
+    if (hasLoaded) return;
     Promise.all([api.get('/model_metrics'), api.get('/forecast_metrics')])
       .then(([modelRes, forecastRes]) => {
-        setMetrics(modelRes.data || []);
-        setForecastMetrics(forecastRes.data?.results || []);
-        setLoading(false);
+        setAll({
+          metrics: modelRes.data || [],
+          forecastMetrics: forecastRes.data?.results || [],
+          loading: false,
+          hasLoaded: true
+        });
       })
       .catch(err => {
         console.error("Error loading metrics:", err);
-        setLoading(false);
+        setAll({ loading: false });
       });
-  }, []);
+  }, [hasLoaded, setAll]);
 
   const openImageDetail = (imgSrc, title, modelName) => {
     const details = {
@@ -87,8 +93,8 @@ const ModelComparison = () => {
     <div className="pb-20">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Algorithm Benchmark Report</h1>
-          <p className="text-slate-400 mt-1">Comparative study of 8 distinct architectural regimes for target AQI classification.</p>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Algorithm Benchmark Report</h1>
+          <p className="text-slate-800 dark:text-slate-300 mt-1">Comparative study of 8 distinct architectural regimes for target AQI classification.</p>
         </div>
         <div className="flex gap-3">
             {bestModel && (
@@ -107,29 +113,29 @@ const ModelComparison = () => {
       </div>
 
       {loading ? (
-        <LoadingOverlay text="Aggregating Architecture Telemetry..." />
+        <LoadingOverlay message="Aggregating Architecture Telemetry..." />
       ) : (
         <>
           {/* Main Chart Card */}
-          <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-8 mb-10 shadow-2xl relative overflow-hidden">
+          <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-3xl p-8 mb-10 shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 p-10 opacity-[0.03] pointer-events-none">
-                <svg className="w-64 h-64 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-4h2v4zm4 0h-2v-6h2v6zm-8 0H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V7h2v2z"/></svg>
+                <svg className="w-64 h-64 text-slate-900 dark:text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-4h2v4zm4 0h-2v-6h2v6zm-8 0H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V7h2v2z"/></svg>
             </div>
             
             <div className="flex flex-wrap justify-between items-center gap-4 mb-10 relative z-10">
               <div>
-                <h3 className="text-xl font-bold text-white">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">
                   {activeMetric === 'Accuracy' && 'Overall Accuracy Leaderboard'}
                   {activeMetric === 'MacroF1' && 'Macro F1-Score Leaderboard'}
                   {activeMetric === 'SevereRecall' && 'Rare-Class Leaderboard (Severe Recall %)'}
                 </h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-slate-800 dark:text-slate-300 mt-1">
                   {activeMetric === 'Accuracy' && 'Comparing raw prediction accuracy across the entire validation dataset.'}
                   {activeMetric === 'MacroF1' && 'Macro F1 provides an unweighted balance across all 6 AQI categories.'}
                   {activeMetric === 'SevereRecall' && 'Measures classification sensitivity specifically on Rare/Severe (Very Unhealthy & Hazardous) bands.'}
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2 bg-slate-950/60 p-1.5 rounded-2xl border border-slate-800">
+              <div className="flex flex-wrap gap-2 bg-white/50 dark:bg-slate-900/60 p-1.5 rounded-2xl border border-slate-300 dark:border-slate-800">
                 {[
                   { id: 'Accuracy', label: 'Accuracy' },
                   { id: 'MacroF1', label: 'Macro F1' },
@@ -141,7 +147,7 @@ const ModelComparison = () => {
                     className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 ${
                       activeMetric === item.id
                         ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                        : 'text-slate-800 dark:text-slate-300 hover:text-slate-800 dark:text-slate-200 hover:bg-slate-800/40'
                     }`}
                   >
                     {item.label}
@@ -179,15 +185,15 @@ const ModelComparison = () => {
           </div>
 
           {/* Model Ranking Table */}
-          <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl overflow-hidden shadow-2xl mb-12">
-            <div className="p-6 border-b border-slate-800 bg-slate-950/40 flex justify-between items-center">
-              <h3 className="font-bold text-white text-lg">Statistical Performance Matrix</h3>
-              <span className="text-[10px] bg-slate-800 text-slate-400 px-3 py-1 rounded-full font-bold uppercase tracking-wider">Research-Grade Validation</span>
+          <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-300 dark:border-white/10 rounded-3xl overflow-hidden shadow-2xl mb-12">
+            <div className="p-6 border-b border-slate-300 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 flex justify-between items-center">
+              <h3 className="font-bold text-slate-900 dark:text-white text-lg">Statistical Performance Matrix</h3>
+              <span className="text-[10px] bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-300 px-3 py-1 rounded-full font-bold uppercase tracking-wider">Research-Grade Validation</span>
             </div>
             <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                  <table className="w-full text-left border-collapse">
                     <thead>
-                    <tr className="text-slate-500 text-[10px] font-black uppercase tracking-[0.15em] bg-slate-950/20">
+                    <tr className="text-slate-800 dark:text-slate-200 text-[10px] font-black uppercase tracking-[0.15em] bg-slate-100/50 dark:bg-slate-900/20">
                         <th className="px-8 py-5">Architecture</th>
                         <th className="px-6 py-5 text-center">Accuracy</th>
                         <th className="px-6 py-5 text-center">Precision</th>
@@ -199,20 +205,20 @@ const ModelComparison = () => {
                     </thead>
                     <tbody className="text-sm">
                     {sortedMetrics.map((row, idx) => (
-                        <tr key={idx} className={`border-b border-slate-800/50 transition-colors group ${idx === 0 ? 'bg-indigo-500/[0.02]' : 'hover:bg-slate-800/20'}`}>
-                        <td className="px-8 py-5 font-bold text-slate-200">
+                        <tr key={idx} className={`border-b border-slate-300 dark:border-slate-800/50 transition-colors group ${idx === 0 ? 'bg-indigo-500/[0.02]' : 'hover:bg-slate-100 dark:hover:bg-slate-800/20'}`}>
+                        <td className="px-8 py-5 font-bold text-slate-800 dark:text-slate-200">
                             <div className="flex items-center gap-3">
-                                <span className="text-[10px] text-slate-600 font-mono w-4">0{idx + 1}</span>
+                                <span className="text-[10px] text-slate-900 dark:text-white font-mono w-4">0{idx + 1}</span>
                                 <span className={`w-1.5 h-1.5 rounded-full ${idx === 0 ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]' : 'bg-slate-700'}`}></span>
                                 {row.Model}
                             </div>
                         </td>
-                        <td className={`px-6 py-5 text-center font-mono transition-colors ${activeMetric === 'Accuracy' ? 'text-emerald-400 bg-emerald-500/[0.02] font-black' : 'text-slate-400'}`}>{(row.Accuracy * 100).toFixed(1)}%</td>
-                        <td className="px-6 py-5 text-center font-mono text-slate-400">{(row.Precision * 100).toFixed(1)}%</td>
-                        <td className="px-6 py-5 text-center font-mono text-slate-400">{(row.Recall * 100).toFixed(1)}%</td>
-                        <td className={`px-6 py-5 text-center font-mono transition-colors ${activeMetric === 'MacroF1' ? 'text-indigo-400 bg-indigo-500/[0.02] font-black' : 'text-slate-400'}`}>{((row.MacroF1 || row.F1Score) * 100).toFixed(1)}%</td>
-                        <td className={`px-6 py-5 text-center transition-colors ${activeMetric === 'SevereRecall' ? 'text-amber-400 bg-amber-500/[0.02] font-black' : 'text-slate-400 font-mono'}`}>{((row.SevereClassRecall || 0) * 100).toFixed(1)}%</td>
-                        <td className="px-8 py-5 text-right font-mono text-slate-500 text-xs">{(row.Time * 1000).toFixed(1)} ms</td>
+                        <td className={`px-6 py-5 text-center font-mono transition-colors ${activeMetric === 'Accuracy' ? 'text-emerald-400 bg-emerald-500/[0.02] font-black' : 'text-slate-800 dark:text-slate-300'}`}>{(row.Accuracy * 100).toFixed(1)}%</td>
+                        <td className="px-6 py-5 text-center font-mono text-slate-800 dark:text-slate-300">{(row.Precision * 100).toFixed(1)}%</td>
+                        <td className="px-6 py-5 text-center font-mono text-slate-800 dark:text-slate-300">{(row.Recall * 100).toFixed(1)}%</td>
+                        <td className={`px-6 py-5 text-center font-mono transition-colors ${activeMetric === 'MacroF1' ? 'text-indigo-400 bg-indigo-500/[0.02] font-black' : 'text-slate-800 dark:text-slate-300'}`}>{((row.MacroF1 || row.F1Score) * 100).toFixed(1)}%</td>
+                        <td className={`px-6 py-5 text-center transition-colors ${activeMetric === 'SevereRecall' ? 'text-amber-400 bg-amber-500/[0.02] font-black' : 'text-slate-800 dark:text-slate-300 font-mono'}`}>{((row.SevereClassRecall || 0) * 100).toFixed(1)}%</td>
+                        <td className="px-8 py-5 text-right font-mono text-slate-800 dark:text-slate-200 text-xs">{(row.Time * 1000).toFixed(1)} ms</td>
                         </tr>
                     ))}
                     </tbody>
@@ -222,9 +228,9 @@ const ModelComparison = () => {
 
           <div className="mb-12">
             <div className="flex items-center gap-4 mb-8">
-                <h2 className="text-2xl font-bold text-white tracking-tight">Classification Evidence Grid</h2>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Classification Evidence Grid</h2>
                 <div className="h-px flex-1 bg-slate-800"></div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">Confusion Matrix Matrix (N=8)</span>
+                <span className="text-[10px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-widest whitespace-nowrap">Confusion Matrix Matrix (N=8)</span>
             </div>
             
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
@@ -238,15 +244,15 @@ const ModelComparison = () => {
                         <div 
                             key={mKey} 
                             onClick={() => openImageDetail(imgUrl, mKey.replace(/_/g, ' ').toUpperCase(), row.Model)}
-                            className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-2xl p-4 hover:ring-2 hover:ring-indigo-500/30 transition-all group shadow-xl cursor-zoom-in"
+                            className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-2xl p-4 hover:ring-2 hover:ring-indigo-500/30 transition-all group shadow-xl cursor-zoom-in"
                         >
                             <div className="flex justify-between items-center mb-4">
-                                <span className="text-xs font-black text-slate-300 group-hover:text-white transition-colors">{mKey.replace(/_/g, ' ').toUpperCase()}</span>
-                                <div className="w-6 h-6 bg-slate-950 rounded-lg flex items-center justify-center text-[10px] text-slate-600 font-bold border border-slate-800">
+                                <span className="text-xs font-black text-slate-800 dark:text-slate-300 group-hover:text-slate-900 dark:text-white transition-colors">{mKey.replace(/_/g, ' ').toUpperCase()}</span>
+                                <div className="w-6 h-6 bg-slate-200 dark:bg-slate-900 rounded-lg flex items-center justify-center text-[10px] text-slate-900 dark:text-slate-100 font-bold border border-slate-300 dark:border-slate-800">
                                     0{idx + 1}
                                 </div>
                             </div>
-                            <div className="aspect-square bg-slate-950 rounded-xl overflow-hidden border border-slate-800 mb-4 transition-all duration-700 relative">
+                            <div className="aspect-square bg-slate-200 dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-300 dark:border-slate-800 mb-4 transition-all duration-700 relative">
                                 <img 
                                     src={imgUrl} 
                                     alt={`CM for ${mKey}`}
@@ -259,11 +265,11 @@ const ModelComparison = () => {
                             </div>
                             <div className="flex justify-between items-end">
                                 <div>
-                                    <p className="text-[9px] text-slate-500 font-bold uppercase tracking-tighter">Severe Recall</p>
+                                    <p className="text-[9px] text-slate-800 dark:text-slate-200 font-bold uppercase tracking-tighter">Severe Recall</p>
                                     <p className="text-lg font-black text-indigo-400">{((row.SevereClassRecall || 0) * 100).toFixed(1)}</p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-[9px] text-slate-500 font-bold uppercase tracking-tighter">Status</p>
+                                    <p className="text-[9px] text-slate-800 dark:text-slate-200 font-bold uppercase tracking-tighter">Status</p>
                                     <p className="text-[10px] font-bold text-emerald-500">VERIFIED</p>
                                 </div>
                             </div>
@@ -275,26 +281,26 @@ const ModelComparison = () => {
 
           <div className="mb-12">
             <div className="flex items-center gap-4 mb-8">
-              <h2 className="text-2xl font-bold text-white tracking-tight">Forecast Model Comparison</h2>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Forecast Model Comparison</h2>
               <div className="h-px flex-1 bg-slate-800"></div>
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">Future AQI Horizons</span>
+              <span className="text-[10px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-widest whitespace-nowrap">Future AQI Horizons</span>
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-5 gap-4 mb-8">
               {bestForecastByHorizon.map((row) => (
-                <div key={row.horizon_hours} className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-2xl p-5 shadow-xl">
-                  <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-2">{row.horizon_hours}h Best Accuracy</p>
-                  <p className="text-sm text-white font-black truncate">{row.model}</p>
+                <div key={row.horizon_hours} className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-2xl p-5 shadow-xl">
+                  <p className="text-[10px] text-slate-800 dark:text-slate-200 font-black uppercase tracking-widest mb-2">{row.horizon_hours}h Best Accuracy</p>
+                  <p className="text-sm text-slate-900 dark:text-white font-black truncate">{row.model}</p>
                   <p className="text-2xl text-indigo-400 font-black mt-3">{(row.accuracy * 100).toFixed(2)}%</p>
-                  <p className="text-[10px] text-slate-500 font-bold mt-2">Macro F1 {(row.macro_f1 * 100).toFixed(1)}%</p>
+                  <p className="text-[10px] text-slate-800 dark:text-slate-200 font-bold mt-2">Macro F1 {(row.macro_f1 * 100).toFixed(1)}%</p>
                 </div>
               ))}
             </div>
 
-            <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl p-8 mb-8 shadow-2xl">
+            <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-300 dark:border-white/10 rounded-3xl p-8 mb-8 shadow-2xl">
               <div className="flex justify-between items-center mb-8">
-                <h3 className="text-xl font-bold text-white">Forecast Accuracy by Horizon</h3>
-                <span className="text-[10px] bg-slate-800 text-slate-400 px-3 py-1 rounded-full font-bold uppercase tracking-wider">Chronological Test Split</span>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Forecast Accuracy by Horizon</h3>
+                <span className="text-[10px] bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-300 px-3 py-1 rounded-full font-bold uppercase tracking-wider">Chronological Test Split</span>
               </div>
               <div className="h-[360px]">
                 <ResponsiveContainer width="100%" height="100%">
@@ -309,15 +315,15 @@ const ModelComparison = () => {
               </div>
             </div>
 
-            <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
-              <div className="p-6 border-b border-slate-800 bg-slate-950/40 flex justify-between items-center">
-                <h3 className="font-bold text-white text-lg">Forecast Performance Matrix</h3>
-                <span className="text-[10px] bg-slate-800 text-slate-400 px-3 py-1 rounded-full font-bold uppercase tracking-wider">1h / 4h / 6h / 12h / 24h</span>
+            <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-300 dark:border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+              <div className="p-6 border-b border-slate-300 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 flex justify-between items-center">
+                <h3 className="font-bold text-slate-900 dark:text-white text-lg">Forecast Performance Matrix</h3>
+                <span className="text-[10px] bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-300 px-3 py-1 rounded-full font-bold uppercase tracking-wider">1h / 4h / 6h / 12h / 24h</span>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                  <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="text-slate-500 text-[10px] font-black uppercase tracking-[0.15em] bg-slate-950/20">
+                    <tr className="text-slate-800 dark:text-slate-200 text-[10px] font-black uppercase tracking-[0.15em] bg-slate-100/50 dark:bg-slate-900/20">
                       <th className="px-8 py-5">Horizon</th>
                       <th className="px-8 py-5">Model</th>
                       <th className="px-6 py-5 text-center">Accuracy</th>
@@ -333,13 +339,13 @@ const ModelComparison = () => {
                       .slice()
                       .sort((a, b) => a.horizon_hours - b.horizon_hours || b.accuracy - a.accuracy)
                       .map((row, idx) => (
-                        <tr key={`${row.horizon_hours}-${row.model}`} className={`border-b border-slate-800/50 transition-colors group ${idx % 3 === 0 ? 'bg-indigo-500/[0.02]' : 'hover:bg-slate-800/20'}`}>
+                        <tr key={`${row.horizon_hours}-${row.model}`} className={`border-b border-slate-300 dark:border-slate-800/50 transition-colors group ${idx % 3 === 0 ? 'bg-indigo-500/[0.02]' : 'hover:bg-slate-100 dark:hover:bg-slate-800/20'}`}>
                           <td className="px-8 py-5 font-black text-indigo-300">{row.horizon_hours}h</td>
-                          <td className="px-8 py-5 font-bold text-slate-200">{row.model}</td>
+                          <td className="px-8 py-5 font-bold text-slate-800 dark:text-slate-200">{row.model}</td>
                           <td className="px-6 py-5 text-center font-black text-emerald-400">{(row.accuracy * 100).toFixed(2)}%</td>
-                          <td className="px-6 py-5 text-center font-mono text-slate-400">{(row.macro_f1 * 100).toFixed(1)}%</td>
-                          <td className="px-6 py-5 text-center font-mono text-slate-400">{(row.balanced_accuracy * 100).toFixed(1)}%</td>
-                          <td className="px-6 py-5 text-center font-mono text-slate-400">{(row.severe_class_recall * 100).toFixed(1)}%</td>
+                          <td className="px-6 py-5 text-center font-mono text-slate-800 dark:text-slate-300">{(row.macro_f1 * 100).toFixed(1)}%</td>
+                          <td className="px-6 py-5 text-center font-mono text-slate-800 dark:text-slate-300">{(row.balanced_accuracy * 100).toFixed(1)}%</td>
+                          <td className="px-6 py-5 text-center font-mono text-slate-800 dark:text-slate-300">{(row.severe_class_recall * 100).toFixed(1)}%</td>
                           <td className="px-6 py-5 text-center">
                             <button 
                                 onClick={() => openImageDetail(
@@ -356,7 +362,7 @@ const ModelComparison = () => {
                                 </svg>
                             </button>
                           </td>
-                          <td className="px-8 py-5 text-right font-mono text-slate-500 text-xs">{row.train_rows.toLocaleString()}</td>
+                          <td className="px-8 py-5 text-right font-mono text-slate-800 dark:text-slate-200 text-xs">{row.train_rows.toLocaleString()}</td>
                         </tr>
                       ))}
                   </tbody>

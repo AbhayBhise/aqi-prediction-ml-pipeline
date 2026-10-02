@@ -49,10 +49,10 @@ const BuyMeACoffeeModal = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl relative animate-in zoom-in-95 duration-300">
+      <div className="dark:bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl relative animate-in zoom-in-95 duration-300">
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
+          className="absolute top-4 right-4 text-slate-800 dark:text-slate-300 hover:text-slate-900 dark:text-white transition-colors"
         >
           <X size={20} />
         </button>
@@ -62,8 +62,8 @@ const BuyMeACoffeeModal = () => {
             <Coffee size={32} className="text-[#FFDD00]" />
           </div>
 
-          <h2 className="text-xl font-bold text-white mb-2">Finding this useful?</h2>
-          <p className="text-slate-400 text-sm mb-6">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Finding this useful?</h2>
+          <p className="text-slate-800 dark:text-slate-300 text-sm mb-6">
             If this project has helped you, consider supporting the development. It keeps the coffee flowing and the code shipping!
           </p>
 
@@ -80,7 +80,7 @@ const BuyMeACoffeeModal = () => {
 
           <button
             onClick={handleClose}
-            className="mt-3 text-xs text-slate-500 hover:text-slate-300 transition-colors"
+            className="mt-3 text-xs text-slate-800 hover:text-slate-800 dark:text-slate-300 transition-colors"
           >
             Maybe later
           </button>

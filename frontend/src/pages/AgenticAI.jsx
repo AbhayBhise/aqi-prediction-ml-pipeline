@@ -1,10 +1,10 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Bot, Brain, Zap, Database, ArrowRight, MessageSquare, Send, User, Cpu, Shield, Activity } from 'lucide-react';
 
 const TOOLS = [
   { name: 'get_current_aqi()', desc: 'Fetches live AQI from OpenWeatherMap API for any city', color: 'cyan', icon: Activity },
   { name: 'query_dataset()', desc: 'Queries the 842,160-row India AQI dataset in memory', color: 'indigo', icon: Database },
-  { name: 'forecast_model()', desc: 'Runs LSTM/XGBoost forecast for 1hâ€“24h horizons', color: 'emerald', icon: Brain },
+  { name: 'forecast_model()', desc: 'Runs LSTM/XGBoost forecast for 1h-24h horizons', color: 'emerald', icon: Brain },
   { name: 'cpcb_health_advice()', desc: 'Maps AQI category to CPCB health recommendations', color: 'amber', icon: Shield },
 ];
 
@@ -66,11 +66,11 @@ const AgenticAI = () => {
             <Bot size={20} className="text-indigo-400" />
           </div>
           <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-full">
-            Unit VI â€” Agentic AI &amp; ReAct Framework
+            Unit VI &mdash; Agentic AI &amp; ReAct Framework
           </span>
         </div>
-        <h1 className="text-3xl font-bold text-white tracking-tight">Agentic AI Reasoning Engine</h1>
-        <p className="text-slate-400 mt-1">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Agentic AI Reasoning Engine</h1>
+        <p className="text-slate-800 dark:text-slate-300 mt-1">
           An autonomous custom AI agent, implementing the ReAct (Reasoning + Acting) protocol for grounded, tool-augmented AQI analysis.
         </p>
       </div>
@@ -78,9 +78,9 @@ const AgenticAI = () => {
       {/* ReAct Loop Architecture */}
       <div className="mb-12">
         <div className="flex items-center gap-4 mb-8">
-          <h2 className="text-2xl font-bold text-white tracking-tight">ReAct Loop Architecture</h2>
-          <div className="h-px flex-1 bg-slate-800" />
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Reason â†’ Act â†’ Observe</span>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">ReAct Loop Architecture</h2>
+          <div className="h-px flex-1 bg-slate-300 dark:bg-slate-800" />
+          <span className="text-[10px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-widest">Reason &rarr; Act &rarr; Observe</span>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           {REACT_STEPS.map((s, i) => {
@@ -93,11 +93,11 @@ const AgenticAI = () => {
             return (
               <div key={i} className={`border rounded-2xl p-5 ${colors} relative`}>
                 {i < REACT_STEPS.length - 1 && (
-                  <ArrowRight size={14} className="absolute -right-3 top-1/2 -translate-y-1/2 text-slate-600 z-10 hidden md:block" />
+                  <ArrowRight size={14} className="absolute -right-3 top-1/2 -translate-y-1/2 text-slate-900 dark:text-white z-10 hidden md:block" />
                 )}
                 <div className="text-2xl font-black mb-1">{i + 1}</div>
                 <p className="text-sm font-black mb-1">{s.step}</p>
-                <p className="text-xs text-slate-400 leading-relaxed">{s.desc}</p>
+                <p className="text-xs text-slate-800 dark:text-slate-300 leading-relaxed">{s.desc}</p>
               </div>
             );
           })}
@@ -115,12 +115,12 @@ const AgenticAI = () => {
             }[t.color];
             return (
               <div key={i} className={`border rounded-xl p-4 flex items-start gap-4 ${color}`}>
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-slate-900/40 backdrop-blur-md shadow-xl`}>
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-white/10 dark:bg-slate-900/40 backdrop-blur-md shadow-xl`}>
                   <Icon size={16} className={color.split(' ')[2]} />
                 </div>
                 <div>
                   <p className={`text-xs font-black font-mono mb-0.5 ${color.split(' ')[2]}`}>{t.name}</p>
-                  <p className="text-xs text-slate-400">{t.desc}</p>
+                  <p className="text-xs text-slate-800 dark:text-slate-300">{t.desc}</p>
                 </div>
               </div>
             );
@@ -128,41 +128,41 @@ const AgenticAI = () => {
         </div>
       </div>
 
-      {/* Chat Interface â€” Full Page */}
+      {/* Chat Interface - Full Page */}
       <div className="mb-12">
         <div className="flex items-center gap-4 mb-8">
-          <h2 className="text-2xl font-bold text-white tracking-tight">Live Agent Interface</h2>
-          <div className="h-px flex-1 bg-slate-800" />
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Live Agent Interface</h2>
+          <div className="h-px flex-1 bg-slate-300 dark:bg-slate-800" />
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Custom ReAct Engine Â· Live</span>
+            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Custom ReAct Engine &middot; Live</span>
           </div>
         </div>
 
-        <div className="bg-slate-900/40 backdrop-blur-md shadow-xl border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+        <div className="bg-white/30 dark:bg-black/20 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 dark:border-white/10 rounded-3xl overflow-hidden shadow-2xl">
           {/* Chat Header */}
           <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 p-5 flex items-center gap-4">
             <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-              <Bot size={22} className="text-white" />
+              <Bot size={22} className="text-slate-900 dark:text-white" />
             </div>
             <div>
-              <p className="font-bold text-white text-base">AQI Project Data Agent</p>
-              <p className="text-[10px] text-indigo-200 uppercase font-black tracking-widest">ReAct Framework Â· Unit VI Â· Syllabus Traceable</p>
+              <p className="font-bold text-slate-900 dark:text-white text-base">AQI Project Data Agent</p>
+              <p className="text-[10px] text-indigo-200 uppercase font-black tracking-widest">ReAct Framework &middot; Unit VI &middot; Syllabus Traceable</p>
             </div>
             <div className="ml-auto flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full">
-              <Cpu size={12} className="text-white" />
-              <span className="text-[10px] text-white font-bold">Internal Agent SDK</span>
+              <Cpu size={12} className="text-slate-900 dark:text-white" />
+              <span className="text-[10px] text-slate-900 dark:text-white font-bold">Internal Agent SDK</span>
             </div>
           </div>
 
           {/* Messages */}
-          <div className="h-[420px] overflow-y-auto p-6 space-y-6 bg-slate-950/30">
+          <div className="h-[420px] overflow-y-auto p-6 space-y-6 bg-slate-100/30 dark:bg-slate-900/30">
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] rounded-3xl p-4 shadow-lg ${
                   msg.role === 'user'
                     ? 'bg-indigo-600 text-white rounded-tr-none'
-                    : 'bg-slate-800 text-slate-200 rounded-tl-none border border-slate-700'
+                    : 'bg-white/80 dark:bg-slate-300 dark:bg-slate-800 text-slate-800 dark:text-slate-200 backdrop-blur-md rounded-tl-none border border-slate-300 dark:border-slate-700'
                 }`}>
                   <div className="flex items-center gap-2 mb-2 opacity-50">
                     {msg.role === 'user' ? <User size={12} /> : <Bot size={12} />}
@@ -170,7 +170,7 @@ const AgenticAI = () => {
                   </div>
                   {/* ReAct Trace */}
                   {msg.role === 'bot' && msg.thought_trace?.length > 0 && (
-                    <div className="mb-3 p-3 bg-slate-900/80 rounded-2xl border border-indigo-500/20 text-[11px] text-indigo-300 font-mono leading-relaxed">
+                    <div className="mb-3 p-3 dark:bg-slate-900/80 rounded-2xl border border-indigo-500/20 text-[11px] text-indigo-300 font-mono leading-relaxed">
                       <div className="flex items-center gap-2 mb-2 border-b border-indigo-500/10 pb-1">
                         <Brain size={12} className="text-indigo-400" />
                         <span className="font-black">REASONING CHAIN (ReAct)</span>
@@ -190,7 +190,7 @@ const AgenticAI = () => {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-slate-800 text-slate-400 px-6 py-3 rounded-full text-sm flex items-center gap-3 border border-slate-700">
+                <div className="bg-white/80 dark:bg-slate-300 dark:bg-slate-800 text-slate-800 dark:text-slate-400 px-6 py-3 rounded-full text-sm flex items-center gap-3 border border-slate-300 dark:border-slate-700">
                   <div className="flex gap-1">
                     {[0, 1, 2].map(d => (
                       <div key={d} className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: `${d * 0.15}s` }} />
@@ -203,7 +203,7 @@ const AgenticAI = () => {
           </div>
 
           {/* Suggested Queries */}
-          <div className="px-6 py-3 border-t border-slate-800 flex gap-2 overflow-x-auto">
+          <div className="px-6 py-3 border-t border-white/20 dark:border-slate-800 flex gap-2 overflow-x-auto">
             {SUGGESTED.map((q, i) => (
               <button
                 key={i}
@@ -216,15 +216,15 @@ const AgenticAI = () => {
           </div>
 
           {/* Input */}
-          <div className="p-5 bg-slate-900/40 backdrop-blur-md shadow-xl border-t border-slate-800">
-            <div className="flex gap-3 bg-slate-950 p-2 rounded-2xl border border-slate-800 focus-within:border-indigo-500/50 transition-colors">
+          <div className="p-5 bg-white/10 dark:bg-slate-900/40 backdrop-blur-md shadow-xl border-t border-white/20 dark:border-slate-800">
+            <div className="flex gap-3 bg-white dark:bg-slate-900 p-2 rounded-2xl border border-slate-300 dark:border-slate-800 focus-within:border-indigo-500/50 transition-colors">
               <input
                 type="text"
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleSend()}
                 placeholder="Ask about AQI, models, health advice, or the dataset..."
-                className="flex-1 bg-transparent px-4 py-2 text-sm text-white focus:outline-none"
+                className="flex-1 bg-transparent px-4 py-2 text-sm text-slate-900 dark:text-white focus:outline-none"
               />
               <button
                 onClick={() => handleSend()}
@@ -234,8 +234,8 @@ const AgenticAI = () => {
                 <Send size={18} />
               </button>
             </div>
-            <p className="text-center text-[10px] text-slate-600 mt-3 uppercase font-bold tracking-tighter">
-              Powered by Custom AQI Engine Â· Secured & Rate Limited
+            <p className="text-center text-[10px] text-slate-900 dark:text-white mt-3 uppercase font-bold tracking-tighter">
+              Powered by Custom AQI Engine &middot; Secured &amp; Rate Limited
             </p>
           </div>
         </div>
@@ -243,35 +243,35 @@ const AgenticAI = () => {
 
       {/* Technical Summary */}
       <div className="bg-gradient-to-r from-indigo-500/5 to-purple-500/5 border border-indigo-500/20 rounded-3xl p-8">
-        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
           <MessageSquare size={18} className="text-indigo-400" /> Technical Implementation
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
           <div>
             <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">LLM Backend</p>
-            <ul className="space-y-1 text-slate-400 text-xs">
-              <li>â€¢ Custom AI Reasoning Engine</li>
-              <li>â€¢ Custom Python SDK integration</li>
-              <li>â€¢ Structured JSON output (thought_trace + response)</li>
-              <li>â€¢ Rate limiting: 4 req/min (free tier)</li>
+            <ul className="space-y-1 text-slate-800 dark:text-slate-300 text-xs">
+              <li>&bull; Custom AI Reasoning Engine</li>
+              <li>&bull; Custom Python SDK integration</li>
+              <li>&bull; Structured JSON output (thought_trace + response)</li>
+              <li>&bull; Rate limiting: 4 req/min (free tier)</li>
             </ul>
           </div>
           <div>
             <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2">Agent Tools</p>
-            <ul className="space-y-1 text-slate-400 text-xs">
-              <li>â€¢ Live AQI via OpenWeatherMap API</li>
-              <li>â€¢ In-memory 842k-row dataset access</li>
-              <li>â€¢ CPCB breakpoint health mapping</li>
-              <li>â€¢ Project metrics &amp; syllabus grounding</li>
+            <ul className="space-y-1 text-slate-800 dark:text-slate-300 text-xs">
+              <li>&bull; Live AQI via OpenWeatherMap API</li>
+              <li>&bull; In-memory 842k-row dataset access</li>
+              <li>&bull; CPCB breakpoint health mapping</li>
+              <li>&bull; Project metrics &amp; syllabus grounding</li>
             </ul>
           </div>
           <div>
             <p className="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-2">ReAct Protocol</p>
-            <ul className="space-y-1 text-slate-400 text-xs">
-              <li>â€¢ Thought â†’ Action â†’ Observation loop</li>
-              <li>â€¢ Thought trace visible in UI (transparency)</li>
-              <li>â€¢ Graceful fallback on quota exhaustion</li>
-              <li>â€¢ Safety filter integration</li>
+            <ul className="space-y-1 text-slate-800 dark:text-slate-300 text-xs">
+              <li>&bull; Thought &rarr; Action &rarr; Observation loop</li>
+              <li>&bull; Thought trace visible in UI (transparency)</li>
+              <li>&bull; Graceful fallback on quota exhaustion</li>
+              <li>&bull; Safety filter integration</li>
             </ul>
           </div>
         </div>
