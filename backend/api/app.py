@@ -1478,10 +1478,13 @@ def generate_dendrogram():
         plt.title("Hierarchical Clustering Dendrogram")
         dend = sch.dendrogram(
             sch.linkage(data_sample, method='ward'),
+            truncate_mode='lastp',
+            p=40,
             leaf_rotation=90.,
-            leaf_font_size=8.0
+            leaf_font_size=10.0,
+            show_contracted=True
         )
-        plt.xlabel("Sample Index")
+        plt.xlabel("Cluster Size (or Sample Index)")
         plt.ylabel("Ward Distance")
         plt.tight_layout()
         
