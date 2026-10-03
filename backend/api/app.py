@@ -1476,19 +1476,30 @@ def generate_dendrogram():
         sch = _get_sch()
         df_eda = get_dataset_eda()
         pollutants = ['PM2_5_ugm3', 'PM10_ugm3', 'NO2_ugm3', 'CO_ugm3', 'SO2_ugm3', 'O3_ugm3']
-        data_sample = df_eda[pollutants].dropna().sample(min(500, len(df_eda)), random_state=42)
         
-        plt.figure(figsize=(100, 40))
-        plt.title("Hierarchical Clustering Dendrogram", fontsize=36)
+        # Group by City to get meaningful, non-truncated hierarchical clustering
+        if 'City' in df_eda.columns:
+            data_sample = df_eda.groupby('City')[pollutants].mean().dropna()
+            labels = data_sample.index.tolist()
+        else:
+            data_sample = df_eda[pollutants].dropna().sample(min(2000, len(df_eda)), random_state=42)
+            labels = None
+            
+        num_leaves = len(data_sample)
+        fig_width = min(max(20, num_leaves * 0.4), 100)
+        
+        plt.figure(figsize=(fig_width, 16))
+        plt.title("Hierarchical Clustering Dendrogram (By City AQI Profile)", fontsize=24)
         dend = sch.dendrogram(
             sch.linkage(data_sample, method='ward'),
+            labels=labels,
             leaf_rotation=90.,
-            leaf_font_size=16.0,
+            leaf_font_size=12.0,
             truncate_mode=None
         )
-        plt.xlabel("Sample Index", fontsize=24)
-        plt.ylabel("Ward Distance", fontsize=24)
-        plt.tight_layout(pad=5.0)
+        plt.xlabel("City / Cluster", fontsize=18)
+        plt.ylabel("Ward Distance", fontsize=18)
+        plt.tight_layout(pad=2.0)
         
         path = os.path.join(DYN_CACHE_DIR, 'dendrogram.png')
         plt.savefig(path, bbox_inches='tight', dpi=200)
