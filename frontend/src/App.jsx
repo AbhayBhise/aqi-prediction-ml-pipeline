@@ -16,6 +16,8 @@ const FinalInsights = lazy(() => import('./pages/FinalInsights'));
 const GenerativeAI = lazy(() => import('./pages/GenerativeAI'));
 const AgenticAI = lazy(() => import('./pages/AgenticAI'));
 
+import useCelestialSky from './hooks/useCelestialSky';
+
 const PageLoader = () => (
   <div className="flex items-center justify-center h-full w-full">
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
@@ -37,7 +39,8 @@ const Layout = ({ children, theme, onThemeChange }) => {
 };
 
 const getInitialTheme = () => {
-  // Dynamically determine theme based on local time as fallback
+  const saved = localStorage.getItem('theme-preference');
+  if (saved) return saved;
   const currentHour = new Date().getHours();
   if (currentHour >= 6 && currentHour < 18) {
     return 'light';
@@ -47,8 +50,16 @@ const getInitialTheme = () => {
 
 function App() {
   const [theme, setTheme] = useState(getInitialTheme);
+  const { celestial } = useCelestialSky();
 
-
+  useEffect(() => {
+    if (celestial && celestial.sun) {
+      // If sun altitude is > 0, it's day (light theme), else night (dark theme)
+      // Only set if not explicitly saved by user (we assume they want the sky to match location)
+      const isDay = celestial.sun.altitude > 0;
+      setTheme(isDay ? 'light' : 'dark');
+    }
+  }, [celestial]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -59,6 +70,7 @@ function App() {
       document.documentElement.classList.add('theme-dark', 'dark');
       document.documentElement.classList.remove('theme-light');
     }
+    localStorage.setItem('theme-preference', theme);
   }, [theme]);
 
   return (
