@@ -312,14 +312,12 @@ _GLOBAL_DIST: dict = {}             # Precalculated distribution for dashboard
 
 def get_dataset() -> pd.DataFrame:
     """Returns the full in-memory dataset. Loads it if still None."""
-    global DATASET
     if DATASET is None:
         _load_dataset_startup()
     return DATASET
 
 def get_dataset_eda() -> pd.DataFrame:
     """Returns the sampled EDA dataset. Loads it if still None."""
-    global DATASET_EDA
     if DATASET_EDA is None:
         _load_dataset_startup()
     return DATASET_EDA

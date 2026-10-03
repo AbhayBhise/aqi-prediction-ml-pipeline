@@ -2,11 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import api from '../services/api';
 import ImageModal from '../components/ImageModal';
-<<<<<<< HEAD
 import LoadingOverlay from '../components/LoadingOverlay';
-=======
 import useMCStore from '../store/useMCStore';
->>>>>>> 1a6b8c8 (feat: Enhance frontend with Shadcn UI, dark mode text contrast fixes, state management and CelestialSky component)
 
 const IMG_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/images`;
 
