@@ -48,19 +48,7 @@ const getInitialTheme = () => {
 function App() {
   const [theme, setTheme] = useState(getInitialTheme);
 
-  useEffect(() => {
-    // Fetch correct time based on IP location to fix any system clock inaccuracies
-    fetch('https://worldtimeapi.org/api/ip')
-      .then(res => res.json())
-      .then(data => {
-        const date = new Date(data.datetime);
-        const hour = date.getHours();
-        setTheme(hour >= 6 && hour < 18 ? 'light' : 'dark');
-      })
-      .catch(err => {
-        console.error("Could not fetch IP time, falling back to system time", err);
-      });
-  }, []);
+
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
