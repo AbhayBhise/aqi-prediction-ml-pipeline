@@ -102,11 +102,13 @@ const Clustering = () => {
             </div>
             <div className="p-6 bg-slate-200/30 dark:bg-slate-900/50 flex items-center justify-center min-h-[450px]">
                 {dendUrl ? (
-                    <img
-                        src={dendUrl}
-                        alt="Dendrogram"
-                        className="max-w-full rounded-xl animate-in fade-in duration-700"
-                    />
+                    <div className="w-full overflow-auto max-h-[700px] rounded-xl bg-white dark:bg-white cursor-move">
+                        <img
+                            src={dendUrl}
+                            alt="Dendrogram"
+                            className="max-w-none min-w-[2000px] w-max animate-in fade-in duration-700"
+                        />
+                    </div>
                 ) : (
                     <div className="text-center p-12 border-2 border-dashed border-white/20 dark:border-slate-800 rounded-3xl w-full">
                         <div className="w-12 h-12 bg-white/10 dark:bg-slate-900/40 backdrop-blur-md shadow-xl rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20 dark:border-slate-800 text-slate-700 dark:text-slate-300">
