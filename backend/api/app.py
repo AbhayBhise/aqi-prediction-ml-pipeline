@@ -1474,19 +1474,20 @@ def generate_dendrogram():
         pollutants = ['PM2_5_ugm3', 'PM10_ugm3', 'NO2_ugm3', 'CO_ugm3', 'SO2_ugm3', 'O3_ugm3']
         data_sample = df_eda[pollutants].dropna().sample(min(200, len(df_eda)), random_state=42)
         
-        plt.figure(figsize=(30, 10))
+        plt.figure(figsize=(40, 15))
         plt.title("Hierarchical Clustering Dendrogram")
         dend = sch.dendrogram(
             sch.linkage(data_sample, method='ward'),
             leaf_rotation=90.,
-            leaf_font_size=8.0
+            leaf_font_size=10.0,
+            truncate_mode=None
         )
         plt.xlabel("Sample Index")
         plt.ylabel("Ward Distance")
-        plt.tight_layout()
+        plt.tight_layout(pad=3.0)
         
         path = os.path.join(DYN_CACHE_DIR, 'dendrogram.png')
-        plt.savefig(path, bbox_inches='tight')
+        plt.savefig(path, bbox_inches='tight', dpi=200)
         plt.close()
         return jsonify({"file": "_dynamic/dendrogram.png"})
     except Exception as e:
