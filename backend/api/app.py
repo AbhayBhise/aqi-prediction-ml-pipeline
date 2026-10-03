@@ -1,5 +1,9 @@
 import os
 import sys
+
+# Add project root to sys.path so 'backend.api...' imports work when running this file directly
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
 import threading
 import requests
 import uuid
@@ -1472,18 +1476,18 @@ def generate_dendrogram():
         sch = _get_sch()
         df_eda = get_dataset_eda()
         pollutants = ['PM2_5_ugm3', 'PM10_ugm3', 'NO2_ugm3', 'CO_ugm3', 'SO2_ugm3', 'O3_ugm3']
-        data_sample = df_eda[pollutants].dropna().sample(min(200, len(df_eda)), random_state=42)
+        data_sample = df_eda[pollutants].dropna().sample(min(500, len(df_eda)), random_state=42)
         
-        plt.figure(figsize=(50, 25))
-        plt.title("Hierarchical Clustering Dendrogram", fontsize=24)
+        plt.figure(figsize=(100, 40))
+        plt.title("Hierarchical Clustering Dendrogram", fontsize=36)
         dend = sch.dendrogram(
             sch.linkage(data_sample, method='ward'),
             leaf_rotation=90.,
-            leaf_font_size=12.0,
+            leaf_font_size=16.0,
             truncate_mode=None
         )
-        plt.xlabel("Sample Index", fontsize=18)
-        plt.ylabel("Ward Distance", fontsize=18)
+        plt.xlabel("Sample Index", fontsize=24)
+        plt.ylabel("Ward Distance", fontsize=24)
         plt.tight_layout(pad=5.0)
         
         path = os.path.join(DYN_CACHE_DIR, 'dendrogram.png')

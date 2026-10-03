@@ -144,7 +144,7 @@ const Clustering = () => {
             <div className="p-6">
                  <h4 className="text-slate-900 dark:text-white font-bold text-sm mb-4">Methodology Note</h4>
                  <p className="text-xs text-slate-800 dark:text-slate-300 leading-relaxed bg-slate-200/50 dark:bg-slate-900/50 backdrop-blur-md p-4 rounded-xl border border-slate-300 dark:border-slate-800">
-                    The dendrogram is computed using <span className="text-indigo-600 dark:text-indigo-400 font-mono">Ward's method</span> on a normalized subset of the research dataset. It identifies at what distance threshold individual city AQI profiles become statistically indistinguishable.
+                    The dendrogram is computed using <span className="text-indigo-600 dark:text-indigo-400 font-mono">Ward&apos;s method</span> on a normalized subset of the research dataset. It identifies at what distance threshold individual city AQI profiles become statistically indistinguishable.
                  </p>
             </div>
         </div>

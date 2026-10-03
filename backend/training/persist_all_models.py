@@ -54,11 +54,11 @@ def train_and_persist():
     
     log(f"Original dataset size: {X.shape}")
 
-    # We use a 100k sample for fast demo training while maintaining research validity
-    if len(X) > 100000:
-        log("Sampling 100,000 rows for training...")
+    # We use a 20k sample for fast demo training while maintaining research validity
+    if len(X) > 20000:
+        log("Sampling 20,000 rows for training...")
         np.random.seed(42)
-        indices = np.random.choice(len(X), 100000, replace=False)
+        indices = np.random.choice(len(X), 20000, replace=False)
         X_train = X[indices]
         y_train = y[indices]
     else:
