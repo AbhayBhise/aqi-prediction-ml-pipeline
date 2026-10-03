@@ -1474,17 +1474,17 @@ def generate_dendrogram():
         pollutants = ['PM2_5_ugm3', 'PM10_ugm3', 'NO2_ugm3', 'CO_ugm3', 'SO2_ugm3', 'O3_ugm3']
         data_sample = df_eda[pollutants].dropna().sample(min(200, len(df_eda)), random_state=42)
         
-        plt.figure(figsize=(40, 15))
-        plt.title("Hierarchical Clustering Dendrogram")
+        plt.figure(figsize=(50, 25))
+        plt.title("Hierarchical Clustering Dendrogram", fontsize=24)
         dend = sch.dendrogram(
             sch.linkage(data_sample, method='ward'),
             leaf_rotation=90.,
-            leaf_font_size=10.0,
+            leaf_font_size=12.0,
             truncate_mode=None
         )
-        plt.xlabel("Sample Index")
-        plt.ylabel("Ward Distance")
-        plt.tight_layout(pad=3.0)
+        plt.xlabel("Sample Index", fontsize=18)
+        plt.ylabel("Ward Distance", fontsize=18)
+        plt.tight_layout(pad=5.0)
         
         path = os.path.join(DYN_CACHE_DIR, 'dendrogram.png')
         plt.savefig(path, bbox_inches='tight', dpi=200)

@@ -7,6 +7,7 @@ const Clustering = () => {
   const [data, setData] = useState(null);
   const [loadingDend, setLoadingDend] = useState(false);
   const [dendUrl, setDendUrl] = useState(null);
+  const [zoom, setZoom] = useState(100);
 
   useEffect(() => {
     api.get('/clustering_data').then(res => {
@@ -104,24 +105,24 @@ const Clustering = () => {
                 {dendUrl ? (
                     <div className="w-full relative">
                         <div className="absolute top-4 right-4 z-10 flex gap-2">
-                            <button className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-white"
-                                onClick={() => document.getElementById('dendrogram-img').style.transform = `scale(${(parseFloat(document.getElementById('dendrogram-img').style.transform.replace('scale(','') || 1) + 0.25)})`}
+                            <button className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                onClick={() => setZoom(z => z + 25)}
                             >
                                 Zoom In
                             </button>
-                            <button className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-white"
-                                onClick={() => document.getElementById('dendrogram-img').style.transform = `scale(${(parseFloat(document.getElementById('dendrogram-img').style.transform.replace('scale(','') || 1) - 0.25)})`}
+                            <button className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                onClick={() => setZoom(z => Math.max(25, z - 25))}
                             >
                                 Zoom Out
                             </button>
                         </div>
-                        <div className="w-full overflow-auto max-h-[700px] rounded-xl bg-white dark:bg-white cursor-move">
+                        <div className="w-full overflow-auto max-h-[700px] rounded-xl bg-white dark:bg-white">
                             <img
                                 id="dendrogram-img"
                                 src={dendUrl}
                                 alt="Dendrogram"
-                                className="max-w-none animate-in fade-in duration-700 origin-top-left"
-                                style={{ transform: 'scale(1)', transition: 'transform 0.2s ease-in-out' }}
+                                className="animate-in fade-in duration-700 origin-top-left"
+                                style={{ width: `${zoom}%`, maxWidth: 'none', transition: 'width 0.2s ease-in-out' }}
                             />
                         </div>
                     </div>
